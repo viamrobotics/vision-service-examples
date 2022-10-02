@@ -16,6 +16,43 @@ program located in `opencv/python`
 Needs the [Viam Python SDK](https://github.com/viamrobotics/viam-python-sdk), can download it with `pip install git+https://github.com/viamrobotics/python-sdk.git`
 run using `python cmd.py`
 
+### app.viam.com
+
+You can also configure a stream of detections completely through the app. 
+Once you have a robot with a webcam connected to app.viam.com:
+
+In CONFIG -> Services, configure your object detection model
+```
+{
+  "register_models": [
+    {
+      "parameters": {
+        "model_path": "/full/path/to/vision-service-examples/data/effdet0.tflite",
+        "num_threads": 1
+      },
+      "name": "find_objects",
+      "type": "tflite_detector"
+    }
+  ]
+}
+```
+Then, in CONFIG -> Components, configure both a "webcam" model camera, and a "transform" model camera. 
+Give the "transform" model the following attributes:
+```
+"stream": "color",
+"source": "the_webcam_name",
+"pipeline": [
+    {
+        "attributes": {
+            "confidence_threshold": 0.5,
+            "detector_name": "find_objects"
+        },
+        "type": "detections"
+    }
+]
+```
+
+Save your config, wait for the robot to reload, and then go to the CONTROL tab to see the stream of detections.
 
 ### Note
 
