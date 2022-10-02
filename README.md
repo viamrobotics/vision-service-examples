@@ -13,7 +13,7 @@ run using `go run cmd.go`
 
 ### Python
 program located in `opencv/python`
-Needs the Viam Python SDK, can download it with `pip install git+https://github.com/viamrobotics/python-sdk.git`
+Needs the [Viam Python SDK](https://github.com/viamrobotics/viam-python-sdk), can download it with `pip install git+https://github.com/viamrobotics/python-sdk.git`
 run using `python cmd.py`
 
 
