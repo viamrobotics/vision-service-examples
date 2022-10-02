@@ -1,0 +1,50 @@
+{
+  "components": [
+    {
+      "depends_on": [],
+      "model": "webcam",
+      "name": "cam1",
+      "type": "camera",
+      "attributes": {}
+    },
+    {
+      "name": "transform",
+      "type": "camera",
+      "model": "transform",
+      "attributes": {
+        "stream": "color",
+        "source": "cam1",
+        "pipeline": [
+          {
+            "attributes": {
+              "confidence_threshold": 0.5,
+              "detector_name": "find_objects"
+            },
+            "type": "detections"
+          }
+        ]
+      },
+      "depends_on": [
+        "cam1"
+      ]
+    }
+  ],
+  "services": [
+    {
+      "name": "",
+      "type": "vision",
+      "attributes": {
+        "register_models": [
+          {
+            "parameters": {
+              "model_path": "/full/path/to/vision-service-examples/data/effdet0.tflite",
+              "num_threads": 1
+            },
+            "name": "find_objects",
+            "type": "tflite_detector"
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -18,7 +18,7 @@ run using `python cmd.py`
 
 ### app.viam.com
 
-You can also configure a stream of detections completely through the app. 
+You can also configure a stream of detections completely through the app. You can see an example config in `viam_app_config.json`.
 Once you have a robot with a webcam connected to app.viam.com:
 
 In CONFIG -> Services, configure your object detection model
