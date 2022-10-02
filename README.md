@@ -3,7 +3,7 @@
 
 This repo gives an example of creating a video stream, using the Viam vision service, and also importing openCV.
 
-The example uses the user's webcam as a robot, adds an object detection model using Viam's vision service, and then draws a box around the object using OpenCV.
+The example uses the user's webcam as a robot, adds an object detection model using Viam's vision service, and then draws a box around the object.
 
 It uses an EfficientDet tflite model from the [tensorflow model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md).
 
