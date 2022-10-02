@@ -1,5 +1,5 @@
 
-## OpenCV with Viam 
+## Viam Vision Service
 
 This repo gives an example of creating a video stream, using the Viam vision service, and also importing openCV.
 
