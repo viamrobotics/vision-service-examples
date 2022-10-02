@@ -8,11 +8,11 @@ The example uses the user's webcam as a robot, adds an object detection model us
 It uses an EfficientDet tflite model from the [tensorflow model zoo](https://github.com/tensorflow/models/blob/master/research/object_detection/g3doc/tf2_detection_zoo.md).
 
 ### Go 
-program located in `opencv/go` 
+program located in the `go` directory. 
 run using `go run cmd.go`
 
 ### Python
-program located in `opencv/python`
+program located in the `python` directory.
 Needs the [Viam Python SDK](https://github.com/viamrobotics/viam-python-sdk), can download it with `pip install git+https://github.com/viamrobotics/python-sdk.git`
 run using `python cmd.py`
 
