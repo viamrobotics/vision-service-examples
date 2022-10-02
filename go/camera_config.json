@@ -1,0 +1,9 @@
+{
+    "components":[
+        {
+            "name": "cam1",
+            "type": "camera",
+            "model": "webcam"
+        }
+    ]
+}
