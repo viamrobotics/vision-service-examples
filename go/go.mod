@@ -1,4 +1,4 @@
-module go.viam.com/viam-samples/opencv
+module go.viam.com/vision-service-examples
 
 go 1.18
 
