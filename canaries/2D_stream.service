@@ -1,0 +1,11 @@
+[Unit]
+Description=displays 2D images from Viam's python SDK
+
+[Service]
+User=$USER
+Type=simple
+ExecStart=$HOME/vision-service-examples/canaries/2D_image_stream.py
+Restart=always
+
+[Install]
+WantedBy=default.target

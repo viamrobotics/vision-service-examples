@@ -1,0 +1,41 @@
+#!/bin/sh
+
+# This scripts updates the python-sdk and the vision-service-examples repo before 
+# re-running the scripts in vision-service-examples/canaries. It's designed to be 
+# run periodically as a cron job.
+
+# UPDATE PYTHON SDK
+echo "updating viam-sdk and vision-service-examples"
+VIAM_SDK=$(pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | grep "viam-sdk")
+if [ ! -z "$VIAM_SDK" ]; then 
+        pip install --upgrade --no-deps --force-reinstall viam-sdk
+        echo "viam-sdk updated"
+else
+        echo "viam-sdk up-to-date"
+fi
+
+# CLONE VIAMROBOTICS/VISION-SERVICE-EXAMPLES
+CV="$HOME/vision-service-examples"
+if [ ! -d "$CV" ]; then
+        git clone https://github.com/viamrobotics/vision-service-examples.git "$HOME/vision-service-examples"
+        echo "vision-service-examples downloaded"
+else
+        echo "vision-service-examples found"
+fi
+
+# UPDATE VIAMROBOTICS/VISION-SERVICE-EXAMPLES IF NEEDED
+cd $CV
+UPSTREAM=${1:-'@{u}'}
+LOCAL=$(git rev-parse @)
+REMOTE=$(git rev-parse "$UPSTREAM")
+if [ ! $LOCAL = $REMOTE ]; then   
+        git reset --hard origin/main
+        echo "vision-service-examples updated"
+else
+        echo "vision-service-examples up-to-date"
+fi
+cd -
+
+# RESTART SCRIPTS
+sudo systemctl restart 2D_stream.service
+
