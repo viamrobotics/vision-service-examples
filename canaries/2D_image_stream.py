@@ -42,7 +42,7 @@ async def main():
             draw = ImageDraw.Draw(pil_img)
             draw.rectangle((0, 0, 75, 25), outline='black')
             fps = get_frames_per_sec()
-            draw.text(xy=(18, 7.5), text=f'{fps} FPS', fill='white')
+            draw.text(xy=(18, 7.5), text=f'{fps} FPS-test', fill='white')
 
             open_cv_image = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
             window_name = '2D'
