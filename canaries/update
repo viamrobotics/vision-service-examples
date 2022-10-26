@@ -8,6 +8,11 @@
 PID=$(pidof xterm)
 kill $PID || true
 
+# UPDATE RDK
+curl http://packages.viam.com/apps/viam-server/viam-server-latest-aarch64.AppImage -o viam-server
+chmod 755 viam-server
+sudo ./viam-server --aix-install
+
 # UPDATE PYTHON SDK
 echo "updating viam-sdk and vision-service-examples"
 VIAM_SDK=$(pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | grep "viam-sdk")
