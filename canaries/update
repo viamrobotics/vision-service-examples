@@ -4,6 +4,10 @@
 # re-running the scripts in vision-service-examples/canaries. It's designed to be 
 # run periodically as a cron job.
 
+# STOP RUNNING PROCESSES
+PID=$(pidof xterm)
+kill $PID || true
+
 # UPDATE PYTHON SDK
 echo "updating viam-sdk and vision-service-examples"
 VIAM_SDK=$(pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | grep "viam-sdk")
@@ -37,5 +41,5 @@ fi
 cd -
 
 # RESTART SCRIPTS
-sudo systemctl restart 2D_stream.service
+DISPLAY=:0 xterm -e python3 $CV/canaries/2D_image_stream.py
 

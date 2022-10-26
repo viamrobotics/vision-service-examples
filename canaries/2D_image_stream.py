@@ -14,12 +14,12 @@ from viam.rpc.dial import Credentials, DialOptions
 async def connect():
     creds = Credentials(
         type='robot-location-secret',
-        payload='pem1epjv07fq2cz2z5723gq6ntuyhue5t30boohkiz3iqht4')
+        payload='gv3b40fw2ii1a0g5dfhfu7i085f7rfj8jm2oh692znd0sedj')
     opts = RobotClient.Options(
         refresh_interval=0,
         dial_options=DialOptions(credentials=creds)
     )
-    return await RobotClient.at_address('pointcloud-cam2-main.60758fe0f6.viam.cloud', opts)
+    return await RobotClient.at_address('2d-stream-main.i2z4laurah.viam.cloud', opts)
 
 
 async def main():
