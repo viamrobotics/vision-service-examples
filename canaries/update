@@ -29,6 +29,7 @@ fi
 
 # UPDATE VIAMROBOTICS/VISION-SERVICE-EXAMPLES IF NEEDED
 cd $CV
+git remote update
 git reset --hard origin/main
 cd -
 
