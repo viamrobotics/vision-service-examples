@@ -41,10 +41,14 @@ async def main():
 
             draw = ImageDraw.Draw(pil_img)
             draw.rectangle((0, 0, 75, 25), outline='black')
-            draw.text(xy=(18, 7.5), text=f'{get_frames_per_sec()} FPS', fill='white')
+            fps = get_frames_per_sec()
+            draw.text(xy=(18, 7.5), text=f'{fps} FPS', fill='white')
 
             open_cv_image = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
-            cv2.imshow('2D', open_cv_image)
+            window_name = '2D'
+            cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
+            cv2.setWindowProperty(window_name,cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
+            cv2.imshow(window_name, open_cv_image)
             cv2.waitKey(1)
     finally:
         await robot.close()
