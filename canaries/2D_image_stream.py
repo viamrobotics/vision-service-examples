@@ -5,7 +5,7 @@ import datetime
 import numpy as np
 
 from PIL import ImageDraw
-from heapq import heappush, heappop
+from collections import deque
 from viam.components.camera import Camera
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
@@ -26,18 +26,18 @@ async def main():
     robot = await connect()
     cam = Camera.from_robot(robot, "standard_camera")
     try:
-        heap = []
+        llist = deque()
 
         def get_frames_per_sec():
             one_sec_ago = datetime.datetime.now() - datetime.timedelta(seconds=1)
             # evict datetimes greater than one sec ago, i.e., datetimes smaller than now()-one_sec_ago
-            while heap[0] < one_sec_ago:
-                heappop(heap)
-            return len(heap)
+            while llist[0] < one_sec_ago:
+                llist.popleft()
+            return len(llist)
 
         while True:
             pil_img = await cam.get_image()
-            heappush(heap, datetime.datetime.now())
+            llist.append(datetime.datetime.now())
 
             draw = ImageDraw.Draw(pil_img)
             draw.rectangle((0, 0, 75, 25), outline='black')
