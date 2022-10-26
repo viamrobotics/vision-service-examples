@@ -29,15 +29,7 @@ fi
 
 # UPDATE VIAMROBOTICS/VISION-SERVICE-EXAMPLES IF NEEDED
 cd $CV
-UPSTREAM=${1:-'@{u}'}
-LOCAL=$(git rev-parse @)
-REMOTE=$(git rev-parse "$UPSTREAM")
-if [ ! $LOCAL = $REMOTE ]; then   
-        git reset --hard origin/main
-        echo "vision-service-examples updated"
-else
-        echo "vision-service-examples up-to-date"
-fi
+git reset --hard origin/main
 cd -
 
 # RESTART SCRIPTS
