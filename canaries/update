@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# This scripts updates the python-sdk and the vision-service-examples repo before 
+# This script updates the python-sdk and the vision-service-examples repo before
 # re-running the scripts in vision-service-examples/canaries. It's designed to be 
 # run periodically as a cron job.
 
