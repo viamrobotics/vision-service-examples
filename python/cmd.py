@@ -34,7 +34,7 @@ async def main():
     cv2.namedWindow('object_detect', cv2.WINDOW_NORMAL)
     # loop forever,  find the person using Viam Vision, and draw the box using openCV
     while(True):
-        img = await cam1.get_image()
+        img = await cam1.get_image(CameraMimeType.JPEG) # default is PNG, JPEG is faster
         detections = await vision.get_detections(img, "object_detect")
         person_d = None
         # turn image into numpy array
