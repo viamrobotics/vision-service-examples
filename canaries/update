@@ -9,6 +9,11 @@ PID=$(pidof xterm)
 kill $PID || true
 
 # UPDATE RDK
+if [ -z "$PASSWORD" ]; then
+  echo "please provide root password"
+  exit 1
+fi
+
 curl http://packages.viam.com/apps/viam-server/viam-server-latest-aarch64.AppImage -o viam-server
 chmod 755 viam-server
 echo $USER | sudo -S ./viam-server --aix-install
@@ -16,7 +21,7 @@ echo $USER | sudo -S ./viam-server --aix-install
 # UPDATE PYTHON SDK
 echo "updating viam-sdk and vision-service-examples"
 VIAM_SDK=$(pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | grep "viam-sdk")
-if [ ! -z "$VIAM_SDK" ]; then 
+if [ -n "$VIAM_SDK" ]; then
         pip install --upgrade --no-deps --force-reinstall viam-sdk
         echo "viam-sdk updated"
 else
