@@ -46,6 +46,7 @@ async def main():
         logging.info("displaying window")
         while True:
             pil_img = await cam.get_image()
+            logging.info("image received")
             llist.append(datetime.datetime.now())
 
             draw = ImageDraw.Draw(pil_img)
