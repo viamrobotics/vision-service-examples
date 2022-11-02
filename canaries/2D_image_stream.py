@@ -10,8 +10,11 @@ from viam.components.camera import Camera
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
 
+import logging
+
 
 async def connect():
+    logging.debug("connecting to robot client")
     creds = Credentials(
         type='robot-location-secret',
         payload='gv3b40fw2ii1a0g5dfhfu7i085f7rfj8jm2oh692znd0sedj')
@@ -24,7 +27,12 @@ async def connect():
 
 async def main():
     robot = await connect()
-    cam = Camera.from_robot(robot, "standard_camera")
+    logging.debug("finished connecting to robot client")
+
+    cam_name = "standard_camera"
+    cam = Camera.from_robot(robot, cam_name)
+    logging.debug(f"found camera {cam_name}")
+
     try:
         llist = deque()
 
@@ -35,6 +43,7 @@ async def main():
                 llist.popleft()
             return len(llist)
 
+        logging.debug("displaying window")
         while True:
             pil_img = await cam.get_image()
             llist.append(datetime.datetime.now())
@@ -51,7 +60,9 @@ async def main():
             cv2.imshow(window_name, open_cv_image)
             cv2.waitKey(1)
     finally:
+        logging.debug("closing robot")
         await robot.close()
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG)
     asyncio.run(main())
