@@ -7,6 +7,7 @@ import numpy as np
 from PIL import ImageDraw
 from collections import deque
 from viam.components.camera import Camera
+from viam.components.types import CameraMimeType
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
 
@@ -45,7 +46,7 @@ async def main():
 
         logging.info("displaying window")
         while True:
-            pil_img = await cam.get_image()
+            pil_img = await cam.get_image(CameraMimeType.JPEG)
             logging.info("image received")
             llist.append(datetime.datetime.now())
 
