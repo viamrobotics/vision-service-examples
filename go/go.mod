@@ -3,6 +3,12 @@ module go.viam.com/vision-service-examples
 go 1.18
 
 require (
+	github.com/edaniels/golog v0.0.0-20220915154812-56efeddfdb44
+	go.viam.com/rdk v0.1.1-0.20220926170613-45df47cccbf0
+	gocv.io/x/gocv v0.31.0
+)
+
+require (
 	cloud.google.com/go v0.102.1 // indirect
 	cloud.google.com/go/compute v1.7.0 // indirect
 	cloud.google.com/go/iam v0.3.0 // indirect
@@ -23,7 +29,6 @@ require (
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/desertbit/timer v0.0.0-20180107155436-c41aec40b27f // indirect
 	github.com/disintegration/imaging v1.6.2 // indirect
-	github.com/edaniels/golog v0.0.0-20220915154812-56efeddfdb44 // indirect
 	github.com/edaniels/gostream v0.0.0-20220916132321-21fe308c63f5 // indirect
 	github.com/edaniels/lidario v0.0.0-20220607182921-5879aa7b96dd // indirect
 	github.com/edaniels/zeroconf v0.0.0-20220607181113-3dc7461460c6 // indirect
@@ -123,10 +128,8 @@ require (
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.23.0 // indirect
 	go.viam.com/api v0.0.0-20220923190547-06b762859376 // indirect
-	go.viam.com/rdk v0.1.1-0.20220926170613-45df47cccbf0 // indirect
 	go.viam.com/test v1.1.1-0.20220909204145-f61b7c01c33e // indirect
 	go.viam.com/utils v0.0.6-0.20220920201121-47f4f3281a18 // indirect
-	gocv.io/x/gocv v0.31.0 // indirect
 	goji.io v2.0.2+incompatible // indirect
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
 	golang.org/x/exp v0.0.0-20220722155223-a9213eeb770e // indirect

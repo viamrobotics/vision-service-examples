@@ -5,6 +5,7 @@ from viam.rpc.dial import Credentials, DialOptions
 from viam.services.vision import VisionServiceClient
 from viam.services.vision import VisModelConfig, VisModelType, Detection
 from viam.components.camera import Camera
+from viam.components.camera.client import CameraMimeType
 import numpy as np
 import cv2
 
@@ -26,6 +27,7 @@ async def main():
     vision = VisionServiceClient.from_robot(robot)
     params = {
         "model_path": "/full/path/to/vision-service-examples/data/effdet0.tflite", 
+        "label_path": "/full/path/to/vision-service-examples/data/effdetlabels.txt",
         "num_threads": 1,
     }
     findPersonDetector = VisModelConfig(name="object_detect", type=VisModelType("tflite_detector"), parameters=params)

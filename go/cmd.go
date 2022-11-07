@@ -64,6 +64,7 @@ func main() {
 			Type: "tflite_detector",
 			Parameters: config.AttributeMap{
 				"model_path":  "/full/path/to/vision-service-examples/data/effdet0.tflite",
+				"label_path":  "/full/path/to/vision-service-examples/data/effdetlabels.txt",
 				"num_threads": 1,
 			},
 		},
