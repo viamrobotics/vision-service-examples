@@ -16,7 +16,7 @@ fi
 
 curl http://packages.viam.com/apps/viam-server/viam-server-latest-aarch64.AppImage -o viam-server
 chmod 755 viam-server
-echo $USER | sudo -S ./viam-server --aix-install
+echo $PASSWORD | sudo -S ./viam-server --aix-install
 
 # UPDATE PYTHON SDK
 echo "updating viam-sdk and vision-service-examples"
@@ -44,7 +44,7 @@ git reset --hard origin/main
 cd -
 
 # RESTART THE VIAM SERVER
-systemctl restart viam-server.service
+echo $PASSWORD | sudo -S systemctl restart viam-server.service
 
 # RESTART SCRIPTS
 DISPLAY=:0 xterm -e python3 $CV/canaries/2D_image_stream.py
