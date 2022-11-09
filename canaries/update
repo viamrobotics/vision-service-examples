@@ -43,5 +43,8 @@ git remote update
 git reset --hard origin/main
 cd -
 
+# RESTART THE VIAM SERVER
+systemctl restart viam-server.service
+
 # RESTART SCRIPTS
 DISPLAY=:0 xterm -e python3 $CV/canaries/2D_image_stream.py
