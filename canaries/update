@@ -8,12 +8,13 @@
 PID=$(pidof xterm)
 kill $PID || true
 
-# UPDATE RDK
+# PASSWORD should be passed as env variable
 if [ -z "$PASSWORD" ]; then
   echo "please provide root password"
   exit 1
 fi
 
+# UPDATE RDK
 curl http://packages.viam.com/apps/viam-server/viam-server-latest-aarch64.AppImage -o viam-server
 chmod 755 viam-server
 echo $PASSWORD | sudo -S ./viam-server --aix-install
