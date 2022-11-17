@@ -46,6 +46,7 @@ cd -
 
 # RESTART THE VIAM SERVER
 echo $PASSWORD | sudo -S systemctl restart viam-server.service
+sleep 30  # give the server some time to properly shutdown and startup
 
 # RESTART SCRIPTS
 DISPLAY=:0 xterm -e python3 $CV/canaries/2D_image_stream.py
