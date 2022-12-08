@@ -39,17 +39,19 @@ In CONFIG -> Services, configure your object detection model
 Then, in CONFIG -> Components, configure both a "webcam" model camera, and a "transform" model camera. 
 Give the "transform" model the following attributes:
 ```
-"stream": "color",
-"source": "the_webcam_name",
-"pipeline": [
-    {
-        "attributes": {
-            "confidence_threshold": 0.5,
-            "detector_name": "find_objects"
-        },
-        "type": "detections"
-    }
-]
+{
+  "stream": "color",
+  "source": "the_webcam_name",
+  "pipeline": [
+      {
+          "attributes": {
+              "confidence_threshold": 0.5,
+              "detector_name": "find_objects"
+          },
+          "type": "detections"
+      }
+  ]
+}
 ```
 
 Save your config, wait for the robot to reload, and then go to the CONTROL tab to see the stream of detections.
