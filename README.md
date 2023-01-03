@@ -11,10 +11,14 @@ It uses an EfficientDet tflite model from the [tensorflow model zoo](https://git
 program located in the `go` directory. 
 run using `go run cmd.go`
 
+Be sure to change the path to the tflite model in cmd.go to the full path on your computer.
+
 ### Python
 program located in the `python` directory.
-Needs the [Viam Python SDK](https://github.com/viamrobotics/viam-python-sdk), can download it with `pip install git+https://github.com/viamrobotics/python-sdk.git`
+Needs the [Viam Python SDK](https://github.com/viamrobotics/viam-python-sdk), can download it with `pip install viam-sdk`
 run using `python cmd.py`
+
+Be sure to change the path to the tflite model in cmd.py to the full path on your computer.
 
 ### app.viam.com
 
@@ -40,7 +44,6 @@ Then, in CONFIG -> Components, configure both a "webcam" model camera, and a "tr
 Give the "transform" model the following attributes:
 ```
 {
-  "stream": "color",
   "source": "the_webcam_name",
   "pipeline": [
       {
