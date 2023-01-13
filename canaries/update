@@ -4,9 +4,10 @@
 # re-running the scripts in vision-service-examples/canaries. It's designed to be 
 # run periodically as a cron job.
 
-# STOP RUNNING PROCESSES
+echo "stopping running processes..."
 PID=$(pidof xterm)
 kill $PID || true
+echo "done"
 
 # PASSWORD should be passed as env variable
 if [ -z "$PASSWORD" ]; then
@@ -14,17 +15,18 @@ if [ -z "$PASSWORD" ]; then
   exit 1
 fi
 
-# UPDATE RDK
+echo "updating RDK..."
 curl http://packages.viam.com/apps/viam-server/viam-server-latest-aarch64.AppImage -o viam-server
 chmod 755 viam-server
 echo $PASSWORD | sudo -S ./viam-server --aix-install
+echo "done"
 
 # UPDATE PYTHON SDK
-echo "updating viam-sdk and vision-service-examples"
 VIAM_SDK=$(pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | grep "viam-sdk")
 if [ -n "$VIAM_SDK" ]; then
+        echo "updating viam-sdk..."
         pip install --upgrade --no-deps --force-reinstall viam-sdk
-        echo "viam-sdk updated"
+        echo "done"
 else
         echo "viam-sdk up-to-date"
 fi
@@ -32,23 +34,28 @@ fi
 # CLONE VIAMROBOTICS/VISION-SERVICE-EXAMPLES
 CV="$HOME/vision-service-examples"
 if [ ! -d "$CV" ]; then
+        echo "downloading vision-service-examples..."
         git clone https://github.com/viamrobotics/vision-service-examples.git "$HOME/vision-service-examples"
-        echo "vision-service-examples downloaded"
+        echo "done"
 else
-        echo "vision-service-examples found"
+        echo "vision-service-examples already downloaded"
 fi
 
-# UPDATE VIAMROBOTICS/VISION-SERVICE-EXAMPLES IF NEEDED
+echo "updating viamrobotics/vision-service-examples if needed..."
 cd $CV
 git remote update
 git reset --hard origin/main
 cd -
+echo "done"
 
 # RESTART THE VIAM SERVER
-echo "restarting the viam-server"
+echo "restarting the viam-server..."
 echo $PASSWORD | sudo -S systemctl restart viam-server.service
+echo "done"
+echo "sleeping for 30 seconds..."
 sleep 30  # give the server some time to properly shutdown and startup
 echo "viam-server up"
 
 # RESTART SCRIPTS
+echo "displaying xterm window..."
 DISPLAY=:0 xterm -e python3 $CV/canaries/2D_image_stream.py
