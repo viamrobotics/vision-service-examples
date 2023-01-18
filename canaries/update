@@ -4,10 +4,6 @@
 # re-running the scripts in vision-service-examples/canaries. It's designed to be 
 # run periodically as a cron job.
 
-# STOP RUNNING PROCESSES
-PID=$(pidof xterm)
-kill $PID || true
-
 # PASSWORD should be passed as env variable
 if [ -z "$PASSWORD" ]; then
   echo "please provide root password"
@@ -52,4 +48,4 @@ echo "viam-server up"
 
 # RESTART SCRIPTS
 echo "displaying xterm window..."
-DISPLAY=:0 xterm -e 'python3 $CV/canaries/2D_image_stream.py 2>&1 | tee /tmp/canary_logs.txt'
+DISPLAY=:0 xterm -e python3 $CV/canaries/2D_image_stream.py

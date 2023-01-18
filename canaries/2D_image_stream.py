@@ -7,7 +7,6 @@ import numpy as np
 from PIL import ImageDraw
 from collections import deque
 from viam.components.camera import Camera
-from viam.components.types import CameraMimeType
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
 
@@ -46,8 +45,12 @@ async def main():
 
         logging.info("displaying window")
         while True:
+            # This is to stop this script just before the start of the next hour.
+            current_min = int(datetime.datetime.now().strftime("%M"))
+            if current_min == 59:
+                break
+
             pil_img = await cam.get_image()
-            logging.info("image received")
             llist.append(datetime.datetime.now())
 
             draw = ImageDraw.Draw(pil_img)
@@ -64,7 +67,8 @@ async def main():
     finally:
         logging.info("closing robot")
         await robot.close()
+        logging.info("robot closed")
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(filename='/tmp/canary_logs.txt', encoding='utf-8', level=logging.INFO)
     asyncio.run(main())
