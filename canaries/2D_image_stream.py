@@ -26,48 +26,58 @@ async def connect():
 
 
 async def main():
-    robot = await connect()
-    logging.info("finished connecting to robot client")
+    robot = None
+    def close():
+        if robot:
+            logging.info("closing robot")
+            await robot.close()
+            logging.info("robot closed")
 
-    cam_name = "standard_camera"
-    cam = Camera.from_robot(robot, cam_name)
-    logging.info(f"found camera {cam_name}")
+    llist = deque()
+    def get_frames_per_sec():
+        one_sec_ago = datetime.datetime.now() - datetime.timedelta(seconds=1)
+        # evict datetimes greater than one sec ago, i.e., datetimes smaller than now()-one_sec_ago
+        while llist[0] < one_sec_ago:
+            llist.popleft()
+        return len(llist)
 
-    try:
-        llist = deque()
+    attempts = 3  # how many times we should retry before failing
+    for _ in range(attempts):
+        try:
+            robot = await connect()
+            logging.info("finished connecting to robot client")
 
-        def get_frames_per_sec():
-            one_sec_ago = datetime.datetime.now() - datetime.timedelta(seconds=1)
-            # evict datetimes greater than one sec ago, i.e., datetimes smaller than now()-one_sec_ago
-            while llist[0] < one_sec_ago:
-                llist.popleft()
-            return len(llist)
+            cam_name = "standard_camera"
+            cam = Camera.from_robot(robot, cam_name)
+            logging.info(f"found camera {cam_name}")
 
-        logging.info("displaying window")
-        while True:
-            # This is to stop this script just before the start of the next hour.
-            current_min = int(datetime.datetime.now().strftime("%M"))
-            if current_min == 59:
-                break
+            logging.info("displaying window")
+            while True:
+                # This is to stop this script just before the start of the next hour.
+                current_min = int(datetime.datetime.now().strftime("%M"))
+                if current_min == 59:
+                    close()
+                    return
 
-            pil_img = await cam.get_image()
-            llist.append(datetime.datetime.now())
+                pil_img = await cam.get_image()
+                llist.append(datetime.datetime.now())
 
-            draw = ImageDraw.Draw(pil_img)
-            draw.rectangle((0, 0, 75, 25), outline='black')
-            fps = get_frames_per_sec()
-            draw.text(xy=(18, 7.5), text=f'{fps} FPS', fill='white')
+                draw = ImageDraw.Draw(pil_img)
+                draw.rectangle((0, 0, 75, 25), outline='black')
+                fps = get_frames_per_sec()
+                draw.text(xy=(18, 7.5), text=f'{fps} FPS', fill='white')
 
-            open_cv_image = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
-            window_name = '2D'
-            cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
-            cv2.setWindowProperty(window_name,cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
-            cv2.imshow(window_name, open_cv_image)
-            cv2.waitKey(1)
-    finally:
-        logging.info("closing robot")
-        await robot.close()
-        logging.info("robot closed")
+                open_cv_image = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
+                window_name = '2D'
+                cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
+                cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+                cv2.imshow(window_name, open_cv_image)
+                cv2.waitKey(1)
+        except Exception as e:
+            logging.info(e)
+            close()
+            continue
+
 
 if __name__ == '__main__':
     logging.basicConfig(
@@ -78,8 +88,9 @@ if __name__ == '__main__':
         force=True
     )
 
-    logging.info(f"start time {datetime.datetime.now().strftime('%H:%M:%S')}")
+    now = lambda: datetime.datetime.now().strftime('%H:%M:%S')
+    logging.info(f"start time {now()}")
     try:
         asyncio.run(main())
     finally:
-        logging.info(f"end time {datetime.datetime.now().strftime('%H:%M:%S')}")
+        logging.info(f"end time {now()}")
