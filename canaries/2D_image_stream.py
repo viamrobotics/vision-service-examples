@@ -73,7 +73,7 @@ if __name__ == '__main__':
     logging.basicConfig(
         filename='/tmp/canary_logs.txt',
         encoding='utf-8',
-        level=logging.DEBUG,
+        level=logging.INFO,
         filemode='w',
         force=True
     )
