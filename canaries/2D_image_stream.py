@@ -76,7 +76,7 @@ async def main():
                 cv2.imshow(window_name, open_cv_image)
                 cv2.waitKey(1)
         except (Exception, grpclib.GRPCError) as e:
-            logging.info(e)
+            logging.info(f"caught exception: {e}")
             close()
             continue
 
