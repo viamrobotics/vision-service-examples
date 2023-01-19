@@ -1,3 +1,5 @@
+import grpclib
+
 import asyncio
 
 import cv2
@@ -73,7 +75,7 @@ async def main():
                 cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
                 cv2.imshow(window_name, open_cv_image)
                 cv2.waitKey(1)
-        except Exception as e:
+        except (Exception, grpclib.GRPCError) as e:
             logging.info(e)
             close()
             continue
