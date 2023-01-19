@@ -70,9 +70,16 @@ async def main():
         logging.info("robot closed")
 
 if __name__ == '__main__':
+    logging.basicConfig(
+        filename='/tmp/canary_logs.txt',
+        encoding='utf-8',
+        level=logging.DEBUG,
+        filemode='w',
+        force=True
+    )
+
     logging.info(f"start time {datetime.datetime.now().strftime('%H:%M:%S')}")
     try:
-        logging.basicConfig(filename='/tmp/canary_logs.txt', encoding='utf-8', level=logging.INFO)
         asyncio.run(main())
     finally:
         logging.info(f"end time {datetime.datetime.now().strftime('%H:%M:%S')}")
