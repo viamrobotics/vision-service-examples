@@ -15,8 +15,9 @@ curl http://packages.viam.com/apps/viam-server/viam-server-latest-aarch64.AppIma
 chmod 755 viam-server
 echo $PASSWORD | sudo -S ./viam-server --aix-install
 
+VSE="vision-service-examples"
 # UPDATE PYTHON SDK
-echo "updating viam-sdk and vision-service-examples"
+echo "updating viam-sdk and $VSE"
 VIAM_SDK=$(pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | grep "viam-sdk")
 if [ -n "$VIAM_SDK" ]; then
         pip install --upgrade --no-deps --force-reinstall viam-sdk
@@ -26,13 +27,16 @@ else
 fi
 
 # CLONE VIAMROBOTICS/VISION-SERVICE-EXAMPLES
-CV="$HOME/vision-service-examples"
-if [ ! -d "$CV" ]; then
-        git clone https://github.com/viamrobotics/vision-service-examples.git "$HOME/vision-service-examples"
-        echo "vision-service-examples downloaded"
-else
-        echo "vision-service-examples found"
+CV="$HOME/$VSE"
+if [ -d "$CV" ]; then
+  echo "$VSE found. Deleting..."
+  rm -rf "$CV"
+  echo "successfully deleted"
 fi
+
+echo "downloading $VSE to $CV..."
+git clone https://github.com/viamrobotics/vision-service-examples.git "$CV"
+echo "$VSE downloaded"
 
 # UPDATE VIAMROBOTICS/VISION-SERVICE-EXAMPLES IF NEEDED
 cd $CV
