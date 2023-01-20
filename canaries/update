@@ -38,12 +38,6 @@ echo "downloading $VSE to $CV..."
 git clone https://github.com/viamrobotics/vision-service-examples.git "$CV"
 echo "$VSE downloaded"
 
-# UPDATE VIAMROBOTICS/VISION-SERVICE-EXAMPLES IF NEEDED
-cd $CV
-git remote update
-git reset --hard origin/main
-cd -
-
 # RESTART THE VIAM SERVER
 echo "restarting the viam-server"
 echo $PASSWORD | sudo -S systemctl restart viam-server.service
