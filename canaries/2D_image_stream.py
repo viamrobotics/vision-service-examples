@@ -32,7 +32,7 @@ async def main():
     def close():
         if robot:
             logging.info("closing robot")
-            await robot.close()
+            robot.close()
             logging.info("robot closed")
 
     llist = deque()
