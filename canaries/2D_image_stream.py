@@ -1,5 +1,3 @@
-import grpclib
-
 import asyncio
 
 import cv2
@@ -77,8 +75,8 @@ async def main():
                 cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
                 cv2.imshow(window_name, open_cv_image)
                 cv2.waitKey(1)
-        except (Exception, grpclib.exceptions.GRPCError) as e:
-            logging.info(f"caught exception '{e}' of type '{type(e)}'")
+        except Exception as e:
+            logging.info(f"caught exception '{e}'")
             close_robot(robot)
             continue
     logging.info(f"cannot get image. {attempts} tried and failed")
