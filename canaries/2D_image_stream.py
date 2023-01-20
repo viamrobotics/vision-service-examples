@@ -27,22 +27,24 @@ async def connect():
     return await RobotClient.at_address('2d-stream-main.i2z4laurah.viam.cloud', opts)
 
 
+def close_robot(robot):
+    if robot:
+        logging.info("closing robot")
+        robot.close()
+        logging.info("robot closed")
+
+
+def get_frames_per_sec(ordered_frames):
+    one_sec_ago = datetime.datetime.now() - datetime.timedelta(seconds=1)
+    # evict datetimes greater than one sec ago, i.e., datetimes smaller than now()-one_sec_ago
+    while ordered_frames[0] < one_sec_ago:
+        ordered_frames.popleft()
+    return len(ordered_frames)
+
+
 async def main():
     robot = None
-    def close():
-        if robot:
-            logging.info("closing robot")
-            robot.close()
-            logging.info("robot closed")
-
     llist = deque()
-    def get_frames_per_sec():
-        one_sec_ago = datetime.datetime.now() - datetime.timedelta(seconds=1)
-        # evict datetimes greater than one sec ago, i.e., datetimes smaller than now()-one_sec_ago
-        while llist[0] < one_sec_ago:
-            llist.popleft()
-        return len(llist)
-
     attempts = 3  # how many times we should retry before failing
     for _ in range(attempts):
         try:
@@ -58,7 +60,7 @@ async def main():
                 # This is to stop this script just before the start of the next hour.
                 current_min = int(datetime.datetime.now().strftime("%M"))
                 if current_min == 59:
-                    close()
+                    close_robot(robot)
                     return
 
                 pil_img = await cam.get_image()
@@ -66,7 +68,7 @@ async def main():
 
                 draw = ImageDraw.Draw(pil_img)
                 draw.rectangle((0, 0, 75, 25), outline='black')
-                fps = get_frames_per_sec()
+                fps = get_frames_per_sec(llist)
                 draw.text(xy=(18, 7.5), text=f'{fps} FPS', fill='white')
 
                 open_cv_image = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
@@ -77,7 +79,7 @@ async def main():
                 cv2.waitKey(1)
         except (Exception, grpclib.exceptions.GRPCError) as e:
             logging.info(f"caught exception '{e}' of type '{type(e)}'")
-            close()
+            close_robot(robot)
             continue
     logging.info(f"cannot get image. {attempts} tried and failed")
 
