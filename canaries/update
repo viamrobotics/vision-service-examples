@@ -46,4 +46,4 @@ echo "viam-server up"
 
 # RESTART SCRIPTS
 echo "displaying xterm window..."
-echo $PASSWORD | sudo -S DISPLAY=:0 xterm -e python3 $CV/canaries/2D_image_stream.py
+DISPLAY=:0 xterm -e "echo $PASSOWRD | sudo -S python3 $CV/canaries/2D_image_stream.py"
