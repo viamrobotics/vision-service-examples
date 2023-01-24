@@ -1,6 +1,4 @@
 import asyncio
-import os
-import time
 
 import cv2
 import datetime
@@ -41,11 +39,6 @@ def get_frames_per_sec(ordered_frames):
         ordered_frames.popleft()
     return len(ordered_frames)
 
-def restart_server():
-    logging.info("restarting the viam-server...")
-    os.system("systemctl restart viam-server")
-    time.sleep(30)  # give the viam-server time to restart
-    logging.info("viam-server up")
 
 async def main():
     robot = None
@@ -85,7 +78,6 @@ async def main():
         except Exception as e:
             logging.info(f"caught exception '{e}'")
             close_robot(robot)
-            restart_server()
             continue
     logging.info(f"cannot get image. {attempts} attempts tried and failed")
 
