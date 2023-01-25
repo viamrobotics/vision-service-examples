@@ -53,6 +53,7 @@ do
   status=$(cat $statusfile)
   rm $statusfile
 
+  echo "exit code: $status"
   if [ $status -eq 0 ]; then
     break
   fi
