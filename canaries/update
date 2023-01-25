@@ -54,7 +54,7 @@ do
   rm $statusfile
 
   echo "exit code: $status"
-  if [ $status -eq 0 ]; then
+  if [ "$status" -eq 0 ]; then
     break
   fi
 
