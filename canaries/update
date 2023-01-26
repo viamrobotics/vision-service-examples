@@ -39,8 +39,8 @@ git clone https://github.com/viamrobotics/vision-service-examples.git "$CV"
 echo "$VSE downloaded"
 
 # TRY TO DISPLAY THE STREAM AT MOST THREE TIMES, RETRYING THE SERVER EACH TIME
-attemp=0
-until [ "$attemp" -ge 3 ]
+attempt=0
+until [ "$attempt" -ge 3 ]
 do
   echo "restarting the viam-server"
   echo $PASSWORD | sudo -S systemctl restart viam-server.service
@@ -58,6 +58,6 @@ do
     break
   fi
 
-  attemp=$((attemp+1))
+  attempt=$((attempt+1))
 done
 
