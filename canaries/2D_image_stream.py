@@ -92,5 +92,7 @@ if __name__ == '__main__':
     logging.info(f"start time {now()}")
     try:
         asyncio.run(main())
+    except:
+        exit(1)
     finally:
         logging.info(f"end time {now()}")

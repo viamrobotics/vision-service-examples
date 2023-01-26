@@ -43,18 +43,18 @@ attempt=0
 until [ "$attempt" -ge 3 ]
 do
   echo "restarting the viam-server"
-  echo $PASSWORD | sudo -S systemctl restart viam-server.service
+  echo "$PASSWORD" | sudo -S systemctl restart viam-server.service
   sleep 30  # give the server some time to properly shutdown and startup
   echo "viam-server up"
 
   echo "displaying xterm window..."
   statusfile=$(mktemp)
   DISPLAY=:0 xterm -e "python3 $CV/canaries/2D_image_stream.py; echo $? > $statusfile"
-  status=$(cat $statusfile)
-  rm $statusfile
+  status=$(cat "$statusfile")
+  rm "$statusfile"
 
   echo "exit code: $status"
-  if [ "$status" -eq 0 ]; then
+  if [ "$status" = 0 ]; then
     break
   fi
 
