@@ -76,6 +76,7 @@ async def main():
     except Exception as e:
         logging.info(f"caught exception '{e}'")
         await close_robot(robot)
+        logging.info("exiting with status 1")
         exit(1)
 
 
