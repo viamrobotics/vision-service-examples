@@ -50,8 +50,9 @@ do
   echo "displaying xterm window..."
   statusfile=$(mktemp)
   echo "$statusfile"
-  DISPLAY=:0 xterm -e "python3 $CV/canaries/2D_image_stream.py; echo $? > $statusfile"
+  DISPLAY=:0 xterm -e "python3 $CV/canaries/2D_image_stream.py; echo \$? > $statusfile"
   status=$(cat "$statusfile")
+  rm $statusfile
 
   echo "exit code: $status"
   if [ "$status" = 0 ]; then
