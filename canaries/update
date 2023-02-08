@@ -39,7 +39,7 @@ git clone https://github.com/viamrobotics/vision-service-examples.git "$CV"
 echo "$VSE downloaded"
 
 # TRY TO DISPLAY THE STREAM AT MOST THREE TIMES, RETRYING THE SERVER EACH TIME
-success=0
+success=false
 attempt=0
 until [ "$attempt" -ge 3 ]
 do
@@ -55,7 +55,7 @@ do
   rm $statusfile
 
   if [ "$status" = 0 ]; then
-    success=1
+    success=true
     break
   fi
 
