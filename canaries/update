@@ -62,3 +62,8 @@ do
   attempt=$((attempt+1))
 done
 
+if $success; then
+  echo "success"
+else
+  echo "failure"
+fi
