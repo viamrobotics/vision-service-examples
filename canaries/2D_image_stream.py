@@ -9,6 +9,8 @@ from collections import deque
 from viam.components.camera import Camera
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
+from viam.services.vision import VisionServiceClient
+from viam.components.camera.client import CameraMimeType
 
 import logging
 
@@ -27,6 +29,7 @@ async def connect():
 
 async def close_robot(robot):
     if robot:
+        print("here")
         logging.info("closing robot")
         await robot.close()
         logging.info("robot closed")
@@ -51,6 +54,12 @@ async def main():
         cam = Camera.from_robot(robot, cam_name)
         logging.info(f"found camera {cam_name}")
 
+        service_name = "vision"
+        vision = VisionServiceClient.from_robot(robot, service_name)
+        logging.info(f"found service {vision}")
+
+        detector_name = "find_objects"
+
         logging.info("displaying window")
         while True:
             # This is to stop this script just before the start of the next hour.
@@ -61,20 +70,43 @@ async def main():
 
             pil_img = await cam.get_image()
             llist.append(datetime.datetime.now())
+            open_cv_image = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
+            open_cv_image = open_cv_image[0:480, 0:320]
+
+            detect_img = await cam.get_image(CameraMimeType.JPEG) # default is PNG, JPEG is faster
+            detections = await vision.get_detections(detect_img, detector_name)
+            print(len(detections))
 
             draw = ImageDraw.Draw(pil_img)
             draw.rectangle((0, 0, 75, 25), outline='black')
             fps = get_frames_per_sec(llist)
             draw.text(xy=(18, 7.5), text=f'{fps} FPS', fill='white')
 
-            open_cv_image = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
-            window_name = '2D'
-            cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
-            cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-            cv2.imshow(window_name, open_cv_image)
+            pix = np.array(detect_img, dtype=np.uint8)
+            pix = cv2.cvtColor(pix, cv2.COLOR_RGB2BGR)
+            final_image = np.ones_like(pix)
+
+            for d in detections:
+                if d.confidence > 0.6:
+                    cv2.rectangle(pix, (d.x_min, d.y_min), (d.x_max, d.y_max), (0, 0, 255), 1)
+                    label = d.class_name + ": " + str(round(d.confidence, 2))
+                    cv2.putText(pix, label, (d.x_min, d.y_min - 5), cv2.FONT_HERSHEY_PLAIN, 1, (0, 0, 255), 1)
+            
+            pix = pix[0:480, 0:320]
+
+            final_image[0:480, 0:320] = open_cv_image
+            final_image[0:480, 320:640] = pix
+            final_image[0:480, 320:321] = [0, 0, 0]
+
+            cv2.imwrite('final.jpg', final_image)
+
+            # window_name = '2D'
+            # cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
+            # cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+            # cv2.imshow(window_name, final_image)
             cv2.waitKey(1)
     except Exception as e:
-        logging.info(f"caught exception '{e}'")
+        print(f"caught exception '{e}'")
         await close_robot(robot)
         logging.info("exiting with status 1")
         exit(1)
