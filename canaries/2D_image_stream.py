@@ -29,7 +29,6 @@ async def connect():
 
 async def close_robot(robot):
     if robot:
-        print("here")
         logging.info("closing robot")
         await robot.close()
         logging.info("robot closed")
@@ -75,7 +74,6 @@ async def main():
 
             detect_img = await cam.get_image(CameraMimeType.JPEG) # default is PNG, JPEG is faster
             detections = await vision.get_detections(detect_img, detector_name)
-            print(len(detections))
 
             draw = ImageDraw.Draw(pil_img)
             draw.rectangle((0, 0, 75, 25), outline='black')
@@ -104,7 +102,7 @@ async def main():
             cv2.imshow(window_name, final_image)
             cv2.waitKey(1)
     except Exception as e:
-        print(f"caught exception '{e}'")
+        logging.info(f"caught exception '{e}'")
         await close_robot(robot)
         logging.info("exiting with status 1")
         exit(1)
