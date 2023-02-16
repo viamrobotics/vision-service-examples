@@ -98,12 +98,10 @@ async def main():
             final_image[0:480, 320:640] = pix
             final_image[0:480, 320:321] = [0, 0, 0]
 
-            cv2.imwrite('final.jpg', final_image)
-
-            # window_name = '2D'
-            # cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
-            # cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-            # cv2.imshow(window_name, final_image)
+            window_name = '2D'
+            cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
+            cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+            cv2.imshow(window_name, final_image)
             cv2.waitKey(1)
     except Exception as e:
         print(f"caught exception '{e}'")
