@@ -22,7 +22,7 @@ window_width = int(425 * scale)
 window_height = int(480 * scale)
 
 async def connect():
-    print("connecting to robot client")
+    logging.info("connecting to robot client")
     creds = Credentials(
         type='robot-location-secret',
         payload='gv3b40fw2ii1a0g5dfhfu7i085f7rfj8jm2oh692znd0sedj')
@@ -35,9 +35,9 @@ async def connect():
 
 async def close_robot(robot):
     if robot:
-        print("closing robot")
+        logging.info("closing robot")
         await robot.close()
-        print("robot closed")
+        logging.info("robot closed")
 
 
 def get_frames_per_sec(ordered_frames):
@@ -117,17 +117,17 @@ async def main():
     llist2 = deque()
     try:
         robot = await connect()
-        print("finished connecting to robot client")
+        logging.info("finished connecting to robot client")
 
         cam_name = "standard_camera"
         cam = Camera.from_robot(robot, cam_name)
-        print(f"found camera {cam_name}")
+        logging.info(f"found camera {cam_name}")
 
         transform_cam_name = "transform"
         transform = Camera.from_robot(robot, transform_cam_name)
-        print(f"found camera {transform_cam_name}")
+        logging.info(f"found camera {transform_cam_name}")
 
-        print("displaying window")
+        logging.info("displaying window")
 
         task1 = asyncio.create_task(detection_stream(transform, llist1))
         task2 = asyncio.create_task(image_stream(cam, llist2))
@@ -136,9 +136,9 @@ async def main():
         await task2
 
     except Exception as e:
-        print(f"caught exception '{e}'")
+        logging.info(f"caught exception '{e}'")
         await close_robot(robot)
-        print("exiting with status 1")
+        logging.info("exiting with status 1")
         exit(1)
 
 
@@ -152,9 +152,9 @@ if __name__ == '__main__':
     )
 
     now = lambda: datetime.datetime.now().strftime('%H:%M:%S')
-    print(f"start time {now()}")
+    logging.info(f"start time {now()}")
     try:
         asyncio.run(main())
     finally:
-        print(f"end time {now()}")
+        logging.info(f"end time {now()}")
 
