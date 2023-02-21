@@ -12,6 +12,10 @@ from viam.rpc.dial import Credentials, DialOptions
 from viam.components.camera.client import CameraMimeType
 
 import logging
+import requests
+import os
+
+url = os.getenv('MY_SLACK_WEBHOOK')
 
 screen_res = 1280, 720
 scale_width = screen_res[0] / 425
@@ -137,6 +141,8 @@ async def main():
 
     except Exception as e:
         logging.info(f"caught exception '{e}'")
+        body = {"text": f'{e}'}
+        res = requests.post(url, json=body)
         await close_robot(robot)
         logging.info("exiting with status 1")
         exit(1)
