@@ -76,12 +76,9 @@ async def detection_stream(transform, llist1):
         pix = cv2.cvtColor(np.array(detect_img, dtype=np.uint8), cv2.COLOR_RGB2BGR)
         pix = pix[0:480, 0:425]
 
-        # cv2.imwrite('transform.jpg', pix)
-
         window_name = 'Detections'
         cv2.namedWindow(window_name, cv2.WND_PROP_VISIBLE)
         cv2.resizeWindow(window_name, int(window_width), window_height)
-        # cv2.setWindowProperty(window_name, cv2.WND_PROP_VISIBLE, cv2.WINDOW_NORMAL)
         cv2.imshow(window_name, pix)
         cv2.waitKey(1)
     return
@@ -104,13 +101,10 @@ async def image_stream(cam, llist2):
         open_cv_image = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
         open_cv_image = open_cv_image[0:480, 0:425]
 
-        # cv2.imwrite('cam.jpg', open_cv_image)
-
         window_name = '2D'
         cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
         cv2.resizeWindow(window_name, window_width, window_height)
         cv2.moveWindow(window_name, 0, 0)
-	# cv2.setWindowProperty(window_name, cv2.WND_PROP_VISIBLE, cv2.WINDOW_NORMAL)
         cv2.imshow(window_name, open_cv_image)
         cv2.waitKey(1)
     return
