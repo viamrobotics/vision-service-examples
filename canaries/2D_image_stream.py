@@ -31,7 +31,7 @@ window_width = int(425 * scale)
 window_height = int(480 * scale)
 
 async def connect():
-    print("connecting to robot client")
+    logging.info("connecting to robot client")
     creds = Credentials(
         type='robot-location-secret',
         payload='gv3b40fw2ii1a0g5dfhfu7i085f7rfj8jm2oh692znd0sedj')
@@ -44,9 +44,9 @@ async def connect():
 
 async def close_robot(robot):
     if robot:
-        print("closing robot")
+        logging.info("closing robot")
         await robot.close()
-        print("robot closed")
+        logging.info("robot closed")
 
 
 def get_frames_per_sec(ordered_frames):
@@ -59,7 +59,7 @@ def get_frames_per_sec(ordered_frames):
 async def detection_stream(robot, llist2):
     transform_cam_name = "transform"
     transform = Camera.from_robot(robot, transform_cam_name)
-    print(f"found camera {transform_cam_name}")
+    logging.info(f"found camera {transform_cam_name}")
     while True:
         # This is to stop this script just before the start of the next hour.
         current_min = int(datetime.datetime.now().strftime("%M"))
@@ -79,10 +79,8 @@ async def detection_stream(robot, llist2):
         window_name = 'Detections'
         cv2.namedWindow(window_name, cv2.WND_PROP_VISIBLE)
         if arg == 2:
-            print("arg = 2")
             cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
         else: 
-            print("arg = 3")
             pix = pix[0:480, 0:425]
             cv2.resizeWindow(window_name, window_width, window_height)
             cv2.moveWindow(window_name, window_width, 0)
@@ -93,7 +91,7 @@ async def detection_stream(robot, llist2):
 async def image_stream(robot, llist1):
     cam_name = "standard_camera"
     cam = Camera.from_robot(robot, cam_name)
-    print(f"found camera {cam_name}")
+    logging.info(f"found camera {cam_name}")
     while True:
         # This is to stop this script just before the start of the next hour.
         current_min = int(datetime.datetime.now().strftime("%M"))
@@ -113,10 +111,8 @@ async def image_stream(robot, llist1):
         window_name = '2D'
         cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
         if arg == 1:
-            print("arg = 1")
             cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
         else:
-            print("arg = 3")
             open_cv_image = open_cv_image[0:480, 0:425]
             cv2.resizeWindow(window_name, window_width, window_height)
             cv2.moveWindow(window_name, 0, 0)
@@ -125,13 +121,12 @@ async def image_stream(robot, llist1):
     return
 
 async def main():
-    print(arg)
     robot = None
     llist1 = deque()
     llist2 = deque()
     try:
         robot = await connect()
-        print("finished connecting to robot client")       
+        logging.info("finished connecting to robot client")       
 
         if arg == 1:
             await image_stream(robot, llist1)
@@ -143,15 +138,15 @@ async def main():
             await task1
             await task2
         else:
-            print("unaccepted argument")
+            logging.info("unaccepted argument")
 
     except Exception as e:
-        print(f"caught exception '{e}'")
+        logging.info(f"caught exception '{e}'")
         if has_webhook:
             body = {"text": f'{e}'}
             res = requests.post(url, json=body)
         await close_robot(robot)
-        print("exiting with status 1")
+        logging.info("exiting with status 1")
         exit(1)
 
 
@@ -165,9 +160,9 @@ if __name__ == '__main__':
     )
 
     now = lambda: datetime.datetime.now().strftime('%H:%M:%S')
-    print(f"start time {now()}")
+    logging.info(f"start time {now()}")
     try:
         asyncio.run(main())
     finally:
-        print(f"end time {now()}")
+        logging.info(f"end time {now()}")
 
