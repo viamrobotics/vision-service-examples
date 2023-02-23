@@ -3,6 +3,7 @@ import asyncio
 import cv2
 import datetime
 import numpy as np
+import sys
 
 from PIL import ImageDraw
 from collections import deque
@@ -15,8 +16,11 @@ import logging
 import requests
 import os
 
-url = os.getenv('MY_SLACK_WEBHOOK')
-arg = int(os.getenv('ARG'))
+has_webhook = False
+if len(sys.argv) > 2:
+    url = sys.argv[2]
+    has_webhook = True
+arg = int(sys.argv[1])
 
 screen_res = 1920, 1080
 scale_width = screen_res[0] / 425
@@ -143,8 +147,9 @@ async def main():
 
     except Exception as e:
         print(f"caught exception '{e}'")
-        body = {"text": f'{e}'}
-        res = requests.post(url, json=body)
+        if has_webhook:
+            body = {"text": f'{e}'}
+            res = requests.post(url, json=body)
         await close_robot(robot)
         print("exiting with status 1")
         exit(1)
