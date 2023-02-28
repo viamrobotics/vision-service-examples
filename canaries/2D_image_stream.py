@@ -77,10 +77,10 @@ async def detection_stream(robot, llist2):
         pix = cv2.cvtColor(np.array(detect_img, dtype=np.uint8), cv2.COLOR_RGB2BGR)
 
         window_name = 'Detections'
-        cv2.namedWindow(window_name, cv2.WND_PROP_VISIBLE)
         if arg == 2:
-            cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
-        else: 
+            cv2.namedWindow(window_name, cv2.WINDOW_FULLSCREEN)
+        else:
+            cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
             pix = pix[0:480, 0:425]
             cv2.resizeWindow(window_name, window_width, window_height)
             cv2.moveWindow(window_name, window_width, 0)
@@ -109,10 +109,10 @@ async def image_stream(robot, llist1):
         open_cv_image = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
 
         window_name = '2D'
-        cv2.namedWindow(window_name, cv2.WND_PROP_FULLSCREEN)
         if arg == 1:
-            cv2.setWindowProperty(window_name, cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+            cv2.namedWindow(window_name, cv2.WINDOW_FULLSCREEN)
         else:
+            cv2.namedWindow(window_name, cv2.WINDOW_NORMAL)
             open_cv_image = open_cv_image[0:480, 0:425]
             cv2.resizeWindow(window_name, window_width, window_height)
             cv2.moveWindow(window_name, 0, 0)
@@ -126,7 +126,7 @@ async def main():
     llist2 = deque()
     try:
         robot = await connect()
-        logging.info("finished connecting to robot client")       
+        logging.info("finished connecting to robot client")
 
         if arg == 1:
             await image_stream(robot, llist1)
