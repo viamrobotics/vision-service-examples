@@ -6,7 +6,6 @@ import (
 
 	"github.com/edaniels/golog"
 	"go.viam.com/rdk/components/camera"
-	"go.viam.com/rdk/config"
 	robotimpl "go.viam.com/rdk/robot/impl"
 	"go.viam.com/rdk/services/vision"
 	"gocv.io/x/gocv"
@@ -52,25 +51,10 @@ func main() {
 	if err != nil {
 		logger.Fatalf("cannot get camera stream: %v", err)
 	}
-	// grab Viam's vision service to add a TF-Lite model for person detection
+	// grab Viam's vision service that already has the TF-Lite model for object detection
 	visionSrv, err := vision.FirstFromRobot(r)
 	if err != nil {
 		logger.Fatalf("cannot get vision service: %v", err)
-	}
-	err = visionSrv.AddDetector(
-		context.Background(),
-		vision.VisModelConfig{
-			Name: "find_objects",
-			Type: "tflite_detector",
-			Parameters: config.AttributeMap{
-				"model_path":  "/full/path/to/vision-service-examples/data/effdet0.tflite",
-				"label_path":  "/full/path/to/vision-service-examples/data/effdetlabels.txt",
-				"num_threads": 1,
-			},
-		},
-	)
-	if err != nil {
-		logger.Fatalf("cannot add tflite model: %v", err)
 	}
 	// make the display window and get the camera stream
 	window := gocv.NewWindow("Object Detect")
