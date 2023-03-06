@@ -10,11 +10,9 @@ from collections import deque
 from viam.components.camera import Camera
 from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
-from viam.components.camera.client import CameraMimeType
 
 import logging
 import requests
-import os
 
 has_webhook = False
 if len(sys.argv) > 2:
@@ -56,7 +54,9 @@ def get_frames_per_sec(ordered_frames):
         ordered_frames.popleft()
     return len(ordered_frames)
 
-async def detection_stream(robot, llist2):
+
+async def detection_stream(robot):
+    llist = deque()
     transform_cam_name = "transform"
     transform = Camera.from_robot(robot, transform_cam_name)
     logging.info(f"found camera {transform_cam_name}")
@@ -64,14 +64,13 @@ async def detection_stream(robot, llist2):
         # This is to stop this script just before the start of the next hour.
         current_min = int(datetime.datetime.now().strftime("%M"))
         if current_min == 59:
-            await close_robot(robot)
             return
-        detect_img = await transform.get_image(CameraMimeType.JPEG) # default is PNG, JPEG is faster
-        llist2.append(datetime.datetime.now())
+        detect_img = await transform.get_image()
+        llist.append(datetime.datetime.now())
 
         draw = ImageDraw.Draw(detect_img)
         draw.rectangle((0, 0, 75, 25), outline='black')
-        fps = get_frames_per_sec(llist2)
+        fps = get_frames_per_sec(llist)
         draw.text(xy=(18, 7.5), text=f'{fps} FPS', fill='white')
 
         pix = cv2.cvtColor(np.array(detect_img, dtype=np.uint8), cv2.COLOR_RGB2BGR)
@@ -86,9 +85,10 @@ async def detection_stream(robot, llist2):
             cv2.moveWindow(window_name, window_width, 0)
         cv2.imshow(window_name, pix)
         cv2.waitKey(1)
-    return
 
-async def image_stream(robot, llist1):
+
+async def image_stream(robot):
+    llist = deque()
     cam_name = "standard_camera"
     cam = Camera.from_robot(robot, cam_name)
     logging.info(f"found camera {cam_name}")
@@ -96,14 +96,13 @@ async def image_stream(robot, llist1):
         # This is to stop this script just before the start of the next hour.
         current_min = int(datetime.datetime.now().strftime("%M"))
         if current_min == 59:
-            await close_robot(robot)
             return
         pil_img = await cam.get_image()
-        llist1.append(datetime.datetime.now())
+        llist.append(datetime.datetime.now())
 
         draw = ImageDraw.Draw(pil_img)
         draw.rectangle((0, 0, 75, 25), outline='black')
-        fps = get_frames_per_sec(llist1)
+        fps = get_frames_per_sec(llist)
         draw.text(xy=(18, 7.5), text=f'{fps} FPS', fill='white')
 
         open_cv_image = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
@@ -118,23 +117,21 @@ async def image_stream(robot, llist1):
             cv2.moveWindow(window_name, 0, 0)
         cv2.imshow(window_name, open_cv_image)
         cv2.waitKey(1)
-    return
+
 
 async def main():
     robot = None
-    llist1 = deque()
-    llist2 = deque()
     try:
         robot = await connect()
         logging.info("finished connecting to robot client")
 
         if arg == 1:
-            await image_stream(robot, llist1)
+            await image_stream(robot)
         elif arg == 2:
-            await detection_stream(robot, llist2)
+            await detection_stream(robot)
         elif arg == 3:
-            task1 = asyncio.create_task(image_stream(robot, llist1))
-            task2 = asyncio.create_task(detection_stream(robot, llist2))
+            task1 = asyncio.create_task(image_stream(robot))
+            task2 = asyncio.create_task(detection_stream(robot))
             await task1
             await task2
         else:
@@ -148,6 +145,7 @@ async def main():
         await close_robot(robot)
         logging.info("exiting with status 1")
         exit(1)
+    await close_robot(robot)
 
 
 if __name__ == '__main__':
