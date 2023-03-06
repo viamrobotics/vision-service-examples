@@ -23,21 +23,14 @@ async def main():
     robot = await connect()
     # grab camera from the robot
     cam1 = Camera.from_robot(robot, "cam1")
-    # grab Viam's vision service to add a TF-lite model for person detection
+    # grab Viam's vision service which has the TFLite detector already registered
     vision = VisionServiceClient.from_robot(robot)
-    params = {
-        "model_path": "/full/path/to/vision-service-examples/data/effdet0.tflite", 
-        "label_path": "/full/path/to/vision-service-examples/data/effdetlabels.txt",
-        "num_threads": 1,
-    }
-    findPersonDetector = VisModelConfig(name="object_detect", type=VisModelType("tflite_detector"), parameters=params)
-    await vision.add_detector(findPersonDetector)
     # make a display window
     cv2.namedWindow('object_detect', cv2.WINDOW_NORMAL)
     # loop forever,  find the person using Viam Vision, and draw the box using openCV
     while(True):
         img = await cam1.get_image(CameraMimeType.JPEG) # default is PNG, JPEG is faster
-        detections = await vision.get_detections(img, "object_detect")
+        detections = await vision.get_detections(img, "find_objects")
         person_d = None
         # turn image into numpy array
         pix = np.array(img, dtype=np.uint8)
