@@ -146,7 +146,6 @@ async def main():
         logging.info("exiting with status 1")
         exit(1)
     await close_robot(robot)
-    logging.info("exiting")
 
 
 if __name__ == '__main__':
