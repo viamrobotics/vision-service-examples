@@ -59,7 +59,7 @@ func main() {
 	// make the display window and get the camera stream
 	window := gocv.NewWindow("Object Detect")
 	defer window.Close()
-	// loop forever, find the person using Viam Vision, and draw the box using openCV
+	// loop forever: find objects using Viam Vision, and draw boxes aroung them using openCV
 	for {
 		// get image
 		img, release, err := camStream.Next(context.Background())
@@ -78,10 +78,11 @@ func main() {
 			logger.Errorf("error converting image to OpenCV Mat type: %v", err)
 			continue
 		}
-		// get the objects that appears above a certain confidence
+		// get the objects that appear above a certain confidence (0.6 here)
+		conf := 0.6
 		labels := make([]string, 0, 25)
 		for _, d := range detections {
-			if d.Score() > 0.6 {
+			if d.Score() > conf {
 				boundingBox := d.BoundingBox()
 				// draw rectangle around the object
 				gocv.Rectangle(&mat, *boundingBox, color.RGBA{255, 0, 0, 255}, 3)
