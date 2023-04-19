@@ -1,0 +1,45 @@
+The files in this directory serve as both example code for displaying image streams and scripts for our canary releases.
+
+A **canary release** (or canary launch or canary deployment) allows developers to have features incrementally tested by a small set of users[^1]. To set up these canaries on Debian-based Linux distribution follow the steps below.
+
+#### Install Python3 dependencies 
+```bash
+$ pip3 install -r requirements.txt
+```
+#### Create a systemd user instance 
+Create an instance in the exact location listed below, filling in the bracketed parameters.
+```bash
+$ cat ~/.config/systemd/user/canary.service
+[Unit]
+Description=Canary Launch
+After=network-online.target graphical.target
+Wants=network-online.target graphical.target
+
+[Service]
+RuntimeMaxSec=1hour
+Restart=always
+Environment=DISPLAY=:0.0
+ExecStartPre=PASSWORD=<root_password> <path to vision-service-examples>/canaries/update
+ExecStart=<needs absolute path to Python3, use $(which python3)> <path to vision-service-examples>/controller.py
+
+[Install]
+WantedBy=multi-user.target
+```
+
+#### Start instance
+> **Warning**
+> You MUST update the address and payload parameters in `controller.py `
+
+```bash
+$ systemctl --user daemon-reload
+$ systemctl --user enable canary.service
+$ systemctl --user restart canary.service
+```
+
+#### Query instance status 
+```bash
+$ systemctl --user status canary.service 
+```
+
+
+[^1]: https://en.wikipedia.org/wiki/Feature_toggle#Canary_release
