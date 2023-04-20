@@ -25,6 +25,18 @@ ExecStart=<needs absolute path to Python3, use $(which python3)> <path to vision
 [Install]
 WantedBy=multi-user.target
 ```
+#### Create a secrets file
+This file contains the address the payload arguments for both canary scripts. It MUST be in the location below
+```bash
+$ cat ~/.canary_secrets.json                         
+{
+        "canary": {
+                "payload": "<payload>",
+                "address": "<address>"
+        }
+}
+
+```
 
 #### Start instance
 > **Warning**
