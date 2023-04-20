@@ -2,7 +2,7 @@
 
 # This script updates the python-sdk and the vision-service-examples repo before
 # re-running the scripts in vision-service-examples/canaries. It's designed to be 
-# run periodically as a cron job.
+# run before any canaries.
 
 # PASSWORD should be passed as env variable
 if [ -z "$PASSWORD" ]; then
@@ -38,28 +38,7 @@ echo "downloading $VSE to $CV..."
 git clone https://github.com/viamrobotics/vision-service-examples.git "$CV"
 echo "$VSE downloaded"
 
-# TRY TO DISPLAY THE STREAM AT MOST THREE TIMES, RETRYING THE SERVER EACH TIME
-attempt=0
-until [ "$attempt" -ge 3 ]
-do
-  echo "restarting the viam-server"
-  echo "$PASSWORD" | sudo -S systemctl restart viam-server.service
-  sleep 120  # give the server some time to properly shutdown and startup
-  echo "viam-server up"
-
-  echo "displaying xterm window..."
-  statusfile=$(mktemp)
-  DISPLAY=:0 xterm -e "python3 $CV/canaries/2D_image_stream.py $1 $2; echo \$? > $statusfile"
-  status=$(cat "$statusfile")
-  rm $statusfile
-
-  if [ "$status" = 0 ]; then
-    echo "success"
-    exit
-  fi
-
-  attempt=$((attempt+1))
-done
-
-echo "failure"
-exit 1
+echo "restarting the viam-server"
+echo "$PASSWORD" | sudo -S systemctl restart viam-server.service
+sleep 120  # give the server some time to properly shutdown and startup
+echo "viam-server up"
