@@ -16,7 +16,7 @@ stream_2D = subprocess.Popen(['python3', f'{dir_path}/2D_image_stream.py',
                               '--address', '<address>',
                               '--resolution', f'{half_width}', f'{height}',
                               '--coordinates', '0', '0',
-                              '--cam', 'cam'
+                              '--cam', 'standard_camera'
                               ])
 
 stream_other = subprocess.Popen(['python3', f'{dir_path}/2D_detection_stream.py',
@@ -24,7 +24,7 @@ stream_other = subprocess.Popen(['python3', f'{dir_path}/2D_detection_stream.py'
                                  '--address', '<address>',
                                  '--resolution', f'{half_width}', f'{height}',
                                  '--coordinates', f'{half_width}', '0',
-                                 '--cam', 'cam2'
+                                 '--cam', 'transform_camera'
                                  ])
 
 for p in [stream_2D, stream_other]:
