@@ -34,7 +34,8 @@ $ cat ~/.canary_secrets.json
 {
         "canary": {
                 "payload": "<payload>",
-                "address": "<address>"
+                "address": "<address>",
+                "webhook": "<webhook>"
         }
 }
 

@@ -16,6 +16,7 @@ f = open(canary_secrets)
 data = json.load(f)
 payload = data['canary']['payload']
 address = data['canary']['address']
+webhook = data['canary']['webhook']
 f.close()
 
 
@@ -26,6 +27,7 @@ stream_2D = subprocess.Popen(['python3', f'{dir_path}/2D_image_stream.py',
                               '--address', address,
                               '--resolution', f'{half_width}', f'{height}',
                               '--coordinates', '0', '0',
+                              '--webhook', webhook,
                               '--cam', 'standard_camera'
                               ])
 
@@ -34,6 +36,7 @@ stream_other = subprocess.Popen(['python3', f'{dir_path}/2D_detection_stream.py'
                                  '--address', address,
                                  '--resolution', f'{half_width}', f'{height}',
                                  '--coordinates', f'{half_width}', '0',
+                                 '--webhook', webhook,
                                  '--cam', 'transform_camera'
                                  ])
 
