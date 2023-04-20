@@ -22,7 +22,7 @@ TimeoutStartSec=15m
 Environment=DISPLAY=:0.0
 Environment=PASSWORD=<root_password> 
 ExecStartPre=<path to vision-service-examples>/canaries/update
-ExecStart=<needs absolute path to Python3, use $(which python3)> <path to vision-service-examples>/controller.py
+ExecStart=<needs absolute path to Python3, use $(which python3)> <path to vision-service-examples>/canaries/controller.py
 
 [Install]
 WantedBy=multi-user.target
