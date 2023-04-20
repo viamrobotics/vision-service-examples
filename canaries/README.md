@@ -18,6 +18,7 @@ Wants=network-online.target graphical.target
 [Service]
 RuntimeMaxSec=1hour
 Restart=always
+TimeoutStartSec=15m
 Environment=DISPLAY=:0.0
 Environment=PASSWORD=<root_password> 
 ExecStartPre=<path to vision-service-examples>/canaries/update
