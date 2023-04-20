@@ -39,8 +39,6 @@ $ cat ~/.canary_secrets.json
 ```
 
 #### Start instance
-> **Warning**
-> You MUST update the address and payload parameters in `controller.py `
 
 ```bash
 $ systemctl --user daemon-reload
