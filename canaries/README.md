@@ -1,6 +1,6 @@
 The files in this directory serve as both example code for displaying image streams and scripts for our canary releases.
 
-A **canary release** (or canary launch or canary deployment) allows developers to have features incrementally tested by a small set of users[^1]. To set up these canaries on Debian-based Linux distribution follow the steps below.
+A **canary release** (or canary launch or canary deployment) allows developers to have features incrementally tested by a small set of users[^1]. To set up these canaries on a Debian-based Linux distribution follow the steps below.
 
 #### Install Python3 dependencies 
 ```bash
