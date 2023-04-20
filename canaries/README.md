@@ -19,7 +19,8 @@ Wants=network-online.target graphical.target
 RuntimeMaxSec=1hour
 Restart=always
 Environment=DISPLAY=:0.0
-ExecStartPre=PASSWORD=<root_password> <path to vision-service-examples>/canaries/update
+Environment=PASSWORD=<root_password> 
+ExecStartPre=<path to vision-service-examples>/canaries/update
 ExecStart=<needs absolute path to Python3, use $(which python3)> <path to vision-service-examples>/controller.py
 
 [Install]
