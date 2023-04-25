@@ -82,7 +82,9 @@ async def main():
         if args.webhook is not None:
             logging.info("posting to webhook...")
             body = {"text": f'{e}'}
-            requests.post(args.webhook, json=body)
+            response = requests.post(args.webhook, json=body)
+            logging.info("done.")
+            logging.info(f'response={response}')
         logging.info(f"caught exception '{e}'")
         exit_status = 1
     finally:
