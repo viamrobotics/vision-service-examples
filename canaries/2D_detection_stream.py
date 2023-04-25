@@ -80,6 +80,7 @@ async def main():
     except Exception as e:
         logging.info(f"caught exception '{e}'")
         if args.webhook is not None:
+            logging.info("posting to webhook...")
             body = {"text": f'{e}'}
             requests.post(args.webhook, json=body)
         logging.info(f"caught exception '{e}'")
