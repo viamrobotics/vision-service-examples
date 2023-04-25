@@ -81,7 +81,7 @@ async def main():
         logging.info(f"caught exception '{e}'")
         if args.webhook is not None:
             logging.info("posting to webhook...")
-            body = {"text": f'{e}'}
+            body = {"text": f'2D_detection_stream="{e}"'}
             response = requests.post(args.webhook, json=body)
             logging.info("done.")
             logging.info(f'response={response}')
