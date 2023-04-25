@@ -1,6 +1,6 @@
 The files in this directory serve as both example code for displaying image streams and scripts for our canary releases.
 
-A **canary release** (or canary launch or canary deployment) allows developers to have features incrementally tested by a small set of users[^1]. To set up these canaries on Debian-based Linux distribution follow the steps below.
+A **canary release** (or canary launch or canary deployment) allows developers to have features incrementally tested by a small set of users[^1]. To set up these canaries on a Debian-based Linux distribution follow the steps below.
 
 #### Install Python3 dependencies 
 ```bash
@@ -28,7 +28,7 @@ ExecStart=<needs absolute path to Python3, use $(which python3)> <path to vision
 WantedBy=multi-user.target
 ```
 #### Create a secrets file
-This file contains the address the payload arguments for both canary scripts. It MUST be in the location below
+This file contains secrets/arguments for both canary scripts. It MUST be in the location below.
 ```bash
 $ cat ~/.canary_secrets.json                         
 {
