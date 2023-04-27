@@ -8,26 +8,16 @@ import numpy as np
 import cv2
 
 
-# async def connect():
-#     creds = Credentials(
-#         type='robot-location-secret',
-#         payload='[PUT  IN INFO FROM ROBOT CONNECT TAB ON APP]')
-#     opts = RobotClient.Options(
-#         refresh_interval=0,
-#         dial_options=DialOptions(credentials=creds)
-#     )
-#     return await RobotClient.at_address('[INFO FROM ROBOT CONNECT TAB ON APP]', opts)
-
-
 async def connect():
     creds = Credentials(
         type='robot-location-secret',
-        payload='nic7jy2ejp5psdfgu2t93egzkxxbqx0pmf5osh3vlaz1h286')
+        payload='[PUT  IN INFO FROM ROBOT CONNECT TAB ON APP]')
     opts = RobotClient.Options(
         refresh_interval=0,
         dial_options=DialOptions(credentials=creds)
     )
-    return await RobotClient.at_address('kj-main.e8haqq87ki.viam.cloud', opts)
+    return await RobotClient.at_address('[INFO FROM ROBOT CONNECT TAB ON APP]', opts)
+
 
 async def main():
     # establish a connection to the robot client
