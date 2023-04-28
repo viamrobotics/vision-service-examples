@@ -37,7 +37,7 @@ stream_other = subprocess.Popen(['python3', f'{dir_path}/2D_detection_stream.py'
                                  '--resolution', f'{half_width}', f'{height}',
                                  '--coordinates', f'{half_width}', '0',
                                  '--webhook', webhook,
-                                 '--cam', 'transform_camera'
+                                 '--cam', 'detections'
                                  ])
 
 for p in [stream_2D, stream_other]:
