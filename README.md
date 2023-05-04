@@ -10,7 +10,7 @@ This example uses a tflite model with an EfficientDet (created by Google) archit
 program located in the `go` directory. 
 run using `go run cmd.go`
 
-Be sure to change the path to the tflite model in cmd.go to the full path on your computer.
+Be sure to change the path to the tflite model in robot_config.json and cmd.go to the full path on your computer.
 
 ### Python
 program located in the `python` directory.
@@ -24,19 +24,25 @@ Be sure to change the path to the tflite model in cmd.py to the full path on you
 You can also configure a stream of detections completely through the app. You can see an example config in `viam_app_config.json`.
 Once you have a robot with a webcam connected to app.viam.com:
 
-In CONFIG -> Services, configure your object detection model
+In CONFIG -> Services, configure your mlmodel and vision service 
 ```
 {
-  "register_models": [
-    {
-      "parameters": {
-        "model_path": "/full/path/to/vision-service-examples/data/effdet0.tflite",
-        "num_threads": 1
-      },
-      "name": "find_objects",
-      "type": "tflite_detector"
-    }
-  ]
+  "name": "EffDet",
+  "type": "mlmodel",
+  "model": "tflite_cpu",
+  "attributes": {
+    "model_path": "/full/path/to/vision-service-examples/data/effdet0.tflite",
+    "label_path": "/full/path/to/vision-service-examples/data/effdetlabels.txt",
+    "num_threads": 1
+  }
+},
+{
+  "name": "myDetector",
+  "type": "vision",
+  "model": "mlmodel",
+  "attributes": {
+    "mlmodel_name": "EffDet"
+  }
 }
 ```
 Then, in CONFIG -> Components, configure both a "webcam" model camera, and a "transform" model camera. 
