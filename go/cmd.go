@@ -27,7 +27,7 @@ const (
 
 func main() {
 	// Setup robot client
-	logger := golog.NewDevelopmentLogger("opencv")
+	logger := golog.NewDevelopmentLogger("example")
 
 	// if you want to create the robot directly from a JSON config
 	r, err := robotimpl.RobotFromConfigPath(context.Background(), "robot_config.json", logger)

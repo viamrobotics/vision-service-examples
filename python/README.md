@@ -10,23 +10,25 @@ In CONFIG -> Components, configure your webcam
 }
 ```
 
-In CONFIG -> Services, configure your object detection model
+In CONFIG -> Services, add your mlmodel and your object detection vision service
 ```
 {
-  "name": "vis_service",
-  "type": "vision",
+  "model": "tflite_cpu",
   "attributes": {
-      "register_models": [
-        {
-          "parameters": {
-            "model_path": "/full/path/to/vision-service-examples/data/effdet0.tflite",
-            "label_path": "/full/path/to/vision-service-examples/data/effdetlabels.txt",
-            "num_threads": 1
-          },
-          "name": "find_objects",
-          "type": "tflite_detector"
-        }
-     ]
-  }
+    "model_path": "/full/path/to/vision-service-examples/data/effdet0.tflite",
+    "label_path": "/full/path/to/vision-service-examples/data/effdetlabels.txt",
+    "num_threads": 1
+  },
+  "name": "EffDet",
+  "type": "mlmodel"
+},
+{
+  "depends_on": ["EffDet"],
+  "model": "mlmodel",
+  "attributes": {
+    "mlmodel_name": "EffDet"
+  },
+  "name": "myDetector",
+  "type": "vision"
 }
 ```
