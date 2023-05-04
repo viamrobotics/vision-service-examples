@@ -1,0 +1,30 @@
+{
+    "components": [
+      {
+        "name": "cam1",
+        "type": "camera",
+        "model": "webcam"
+      }
+    ],
+    "services": [
+      {
+        "model": "tflite_cpu",
+        "attributes": {
+          "model_path": "/full/path/to/vision-service-examples/data/effdet0.tflite",
+          "label_path": "/full/path/to/vision-service-examples/data/effdetlabels.txt",
+          "num_threads": 1
+        },
+        "name": "EffDet",
+        "type": "mlmodel"
+      },
+      {
+        "depends_on": ["EffDet"],
+        "model": "mlmodel",
+        "attributes": {
+          "mlmodel_name": "EffDet"
+        },
+        "name": "myDetector",
+        "type": "vision"
+      }
+    ]
+  }
