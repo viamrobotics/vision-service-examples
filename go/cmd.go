@@ -72,6 +72,7 @@ func main() {
 		detections, err := myDetector.Detections(context.Background(), img, nil)
 		if err != nil {
 			logger.Errorf("detection error: %v", err)
+			continue
 		}
 		// get the detections that appear above a certain confidence (0.6 here)
 		labels := make([]string, 0, 25)
