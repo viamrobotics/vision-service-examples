@@ -37,7 +37,7 @@ In CONFIG -> Services, configure your mlmodel and vision service
   }
 },
 {
-  "name": "myDetector",
+  "name": "find_objects",
   "type": "vision",
   "model": "mlmodel",
   "attributes": {
