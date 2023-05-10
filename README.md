@@ -50,6 +50,7 @@ Give the "transform" model the following attributes:
 ```
 {
   "source": "the_webcam_name",
+  "depends_on": ["the_webcam_name"],
   "pipeline": [
       {
           "attributes": {
