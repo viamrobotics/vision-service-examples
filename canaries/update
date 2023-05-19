@@ -10,11 +10,6 @@ if [ -z "$PASSWORD" ]; then
   exit 1
 fi
 
-# UPDATE RDK
-curl http://packages.viam.com/apps/viam-server/viam-server-latest-aarch64.AppImage -o viam-server
-chmod 755 viam-server
-echo $PASSWORD | sudo -S ./viam-server --aix-install
-
 VSE="vision-service-examples"
 # UPDATE PYTHON SDK
 echo "updating viam-sdk and $VSE"
@@ -38,7 +33,7 @@ echo "downloading $VSE to $CV..."
 git clone https://github.com/viamrobotics/vision-service-examples.git "$CV"
 echo "$VSE downloaded"
 
-echo "restarting the viam-server"
-echo "$PASSWORD" | sudo -S systemctl restart viam-server.service
+echo "restarting and updating the viam-server..."
+echo "$PASSWORD" | sudo -S systemctl restart viam-server.service  # the viam-server updates on restarts
 sleep 120  # give the server some time to properly shutdown and startup
 echo "viam-server up"
