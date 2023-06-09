@@ -1,0 +1,15 @@
+{
+  "components": [
+    {
+      "name": "webcam",
+      "type": "camera",
+      "model": "webcam",
+      "attributes": {
+        "width_px": 800,
+        "height_px": 448,
+        "format": "MJPEG",
+        "video_path": "usb-046d_C922_Pro_Stream_Webcam_85809C6F-video-index0"
+      }
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "packages": [
+    {
+      "name": "effdet0",
+      "version": "latest",
+      "package": "3a2e76e2-3fa5-40a6-83df-ee3cff3747f0/effdet0"
+    }
+  ],
+  "components": [
+    {
+      "type": "camera",
+      "model": "webcam",
+      "attributes": {
+        "width_px": 1280,
+        "height_px": 720,
+        "format": "YUYV",
+        "video_path": "usb-046d_C922_Pro_Stream_Webcam_85809C6F-video-index0"
+      },
+      "name": "sourceCam",
+      "depends_on": []
+    },
+    {
+      "attributes": {
+        "pipeline": [
+          {
+            "attributes": {
+              "detector_name": "detector",
+              "confidence_threshold": 0.3
+            },
+            "type": "detections"
+          }
+        ],
+        "source": "sourceCam"
+      },
+      "depends_on": [],
+      "name": "webcam",
+      "type": "camera",
+      "model": "transform"
+    }
+  ],
+  "services": [
+    {
+      "name": "detector",
+      "type": "vision",
+      "model": "mlmodel",
+      "attributes": {
+        "mlmodel_name": "effdet"
+      }
+    },
+    {
+      "name": "effdet",
+      "type": "mlmodel",
+      "model": "tflite_cpu",
+      "attributes": {
+        "model_path": "${packages.effdet0}/effdet0.tflite",
+        "label_path": "${packages.effdet0}/labels.txt",
+        "num_threads": 1
+      }
+    }
+  ]
+}

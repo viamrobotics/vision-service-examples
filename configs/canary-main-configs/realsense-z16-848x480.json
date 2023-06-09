@@ -1,0 +1,23 @@
+{
+  "remotes": [
+    {
+      "name": "realsense",
+      "address": "127.0.0.1:8085"
+    }
+  ],
+  "processes": [
+    {
+      "id": "realsense-server",
+      "name": "/usr/local/bin/intelrealgrpcserver",
+      "log": true,
+      "args": [
+        "8085",
+        "0",
+        "0",
+        "848",
+        "480",
+        "--disable-color"
+      ]
+    }
+  ]
+}
