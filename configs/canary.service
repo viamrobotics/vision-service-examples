@@ -8,25 +8,16 @@ After=network-online.target graphical.target
 Wants=network-online.target graphical.target
 
 [Service]
-# shutdown after 15 minutes (or less if started in middle of increment)
+# stop running this job after 15 minutes (or less if started in middle of increment)
 RuntimeMaxSec=15m
 
 # always restart after shutdown. This is a trick to periodically restart.
 Restart=always
 
 TimeoutStartSec=5m
-Environment=DISPLAY=:0.0
-Environment=PASSWORD=<your password here>
 
-# Open3D requires OpenGL >=3.3, but Pi only implements 2.1. This does the equivalent computation in
-# software, which allows Open3D to display properly
-Environment=LIBGL_ALWAYS_SOFTWARE=true 
-
-# update before running script
-ExecStartPre=/home/<your username here>/vision-service-examples/canaries/update
-
-# script
-ExecStart=/usr/bin/python3 /home/<your username here>/vision-service-examples/canaries/controller.py
+ExecStart=/home/pi/vision-service-examples/canary/start
 
 [Install]
-WantedBy=multi-user.target
+# this was previously multi-user.target but there is no multi-user.target in /usr/lib/systemd/user/
+WantedBy=default.target

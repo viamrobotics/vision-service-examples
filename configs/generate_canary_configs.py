@@ -1,8 +1,27 @@
+from enum import Enum
 import json
 
+class SourceType(Enum):
+    LOGITECH='logitech'
+    REALSENSE='realsense'
+    REMOTE='remote'
+
+class FormatType(Enum):
+    YUYV='yuyv'
+    MJPEG='mjpeg'
+    PCD='pcd'
+    Z16='z16'
+
 num_spaces_for_indent = 2
-configs_path = './canary-main-configs/'
+configs_path = './configs/canary-main-configs/'
 logitech_video_path = 'usb-046d_C922_Pro_Stream_Webcam_85809C6F-video-index0'
+
+def make_test_name(source_type, format_type, width, height, with_detections=False):
+    result = f'{configs_path}{source_type.value.lower()}-{format_type.value.lower()}-{width}x{height}'
+    if with_detections:
+        result += '-detections'
+    result += '.json'
+    return result
 
 # Tests 1-9
 def make_logitech_yuyv_tests():
@@ -29,7 +48,8 @@ def make_logitech_yuyv_tests():
                 }
             ]
         }
-        with open(f'{configs_path}logitech-yuyv-{width}x{height}.json', 'w') as f:
+        test_name = make_test_name(SourceType.LOGITECH, FormatType.YUYV, width, height)
+        with open(test_name, 'w') as f:
             f.write(json.dumps(config, indent=num_spaces_for_indent))
 
 # Tests 10, 19
@@ -51,7 +71,7 @@ def make_logitech_with_detections_test(format):
                 'attributes': {
                     'width_px': 1280,
                     'height_px': 720,
-                    'format': format,
+                    'format': format.value.upper(),
                     'video_path': 'usb-046d_C922_Pro_Stream_Webcam_85809C6F-video-index0'
                 },
                 'name': 'sourceCam',
@@ -90,14 +110,15 @@ def make_logitech_with_detections_test(format):
                 'type': 'mlmodel',
                 'model': 'tflite_cpu',
                 'attributes': {
-                    'model_path': '${packages.effdet0}/effdet0.tflite',
-                    'label_path': '${packages.effdet0}/labels.txt',
+                    'model_path': '/home/pi/.viam/packages/effdet0/effdet0.tflite',
+                    'label_path': '/home/pi/.viam/packages/effdet0/effdetlabels.txt',
                     'num_threads': 1
                 }
             }
         ]
     }
-    with open(f'{configs_path}logitech-{format.lower()}-{width}x{height}-detections.json', 'w') as f:
+    test_name = make_test_name(SourceType.LOGITECH, format, width, height, with_detections=True)
+    with open(test_name, 'w') as f:
         f.write(json.dumps(config, indent=num_spaces_for_indent))
 
 # Tests 11-18
@@ -125,11 +146,12 @@ def make_logitech_mjpeg_tests():
                 }
             ]
         }
-        with open(f'{configs_path}logitech-mjpeg-{width}x{height}.json', 'w') as f:
+        test_name = make_test_name(SourceType.LOGITECH, FormatType.MJPEG, width, height)
+        with open(test_name, 'w') as f:
             f.write(json.dumps(config, indent=num_spaces_for_indent))
 
 # Test 20
-def make_emeet_remote_test():
+def make_remote_test():
     config = {
       'components': [],
       'remotes': [
@@ -140,7 +162,8 @@ def make_emeet_remote_test():
         }
       ]
     }
-    with open(f'{configs_path}emeet.json', 'w') as f:
+    test_name = f'{configs_path}remote.json'
+    with open(test_name, 'w') as f:
         f.write(json.dumps(config, indent=num_spaces_for_indent))
 
 # Tests 21-24
@@ -172,7 +195,8 @@ def make_realsense_yuyv_tests():
                 }
             ]
         }
-        with open(f'{configs_path}realsense-yuyv-{width}x{height}.json', 'w') as f:
+        test_name = make_test_name(SourceType.REALSENSE, FormatType.YUYV, width, height)
+        with open(test_name, 'w') as f:
             f.write(json.dumps(config, indent=num_spaces_for_indent))
 
 # Tests 25-27
@@ -203,7 +227,8 @@ def make_realsense_z16_tests():
                 }
             ]
         }
-        with open(f'{configs_path}realsense-z16-{width}x{height}.json', 'w') as f:
+        test_name = make_test_name(SourceType.REALSENSE, FormatType.Z16, width, height)
+        with open(test_name, 'w') as f:
             f.write(json.dumps(config, indent=num_spaces_for_indent))
 
 # Tests 28-30
@@ -253,15 +278,16 @@ def make_realsense_pcd_tests():
                 }
             ]
         }
-        with open(f'{configs_path}realsense-pcd-{width}x{height}.json', 'w') as f:
+        test_name = make_test_name(SourceType.REALSENSE, FormatType.PCD, width, height)
+        with open(test_name, 'w') as f:
             f.write(json.dumps(config, indent=num_spaces_for_indent))
 
 def main():
     make_logitech_yuyv_tests()
-    make_logitech_with_detections_test(format='YUYV')
+    make_logitech_with_detections_test(FormatType.YUYV)
     make_logitech_mjpeg_tests()
-    make_logitech_with_detections_test(format='MJPEG')
-    make_emeet_remote_test()
+    make_logitech_with_detections_test(FormatType.MJPEG)
+    make_remote_test()
     make_realsense_yuyv_tests()
     make_realsense_z16_tests()
     make_realsense_pcd_tests()

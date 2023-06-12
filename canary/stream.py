@@ -1,35 +1,32 @@
+import re
 import argparse
 import asyncio
-import os
+from enum import Enum
 from utils import Fps
 import cv2
 import numpy as np
 import open3d as o3d
-from enum import Enum
 from screeninfo import get_monitors
 
 from PIL import Image, ImageDraw
 from viam.components.camera import Camera
 from viam.robot.client import RobotClient
-from viam.rpc.dial import Credentials, DialOptions
-from viam.errors import ResourceNotFoundError
+from viam.rpc.dial import DialOptions
 
 
 class SourceType(Enum):
-    WEBCAM='webcam'
-    PCD='pcd' # PCD must come before REALSENSE_COLOR and REALSENSE_DEPTH
-              # because both realsense:color and realsense:depth will be
-              # valid cameras when reading PCD data, and these values
-              # are checked sequentially for their presence on the robot
-    REALSENSE_COLOR='realsense:color'
-    REALSENSE_DEPTH='realsense:depth'
+    LOGITECH='logitech'
+    REALSENSE='realsense'
+    REMOTE='remote'
 
+class FormatType(Enum):
+    YUYV='yuyv'
+    MJPEG='mjpeg'
+    PCD='pcd'
+    Z16='z16'
 
 parser = argparse.ArgumentParser()
-
-parser.add_argument('--secret', type=str, required=True, help='the credential')
-parser.add_argument('--address', type=str, required=True, help='address of the robot (IP address, URL, etc.)')
-
+parser.add_argument('--config_name', type=str, required=True, help='the config name')
 args = parser.parse_args()
 
 monitor = get_monitors()[0]
@@ -37,14 +34,11 @@ screen_width = monitor.width
 screen_height = monitor.height
 
 async def connect():
-    creds = Credentials(
-        type='robot-location-secret',
-        payload=args.secret)
     opts = RobotClient.Options(
-        refresh_interval=0,
-        dial_options=DialOptions(credentials=creds)
+      refresh_interval=0,
+      dial_options=DialOptions(insecure=True)
     )
-    return await RobotClient.at_address(args.address, opts)
+    return await RobotClient.at_address('localhost:8080', opts)
 
 async def close_robot(robot):
     if robot:
@@ -62,9 +56,7 @@ async def stream_2D(cam):
         draw = ImageDraw.Draw(pil_img)
         draw.rectangle((0, 0, 275, 30), outline='black')
         draw.text(xy=(18, 2), text=f'{fps.get()} FPS', fill='white')
-        
-        curr_test_name = os.environ['curr_test_name']
-        draw.text(xy=(18, 15), text=curr_test_name, fill='white')
+        draw.text(xy=(18, 15), text=args.config_name, fill='white')
 
         opencv_image = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
         
@@ -102,8 +94,7 @@ async def stream_3D(cam):
         fps_img = Image.new('RGB', (screen_width,screen_height), color=(255,255,255))
         draw = ImageDraw.Draw(fps_img)
         draw.text(xy=(0,0), text=f'{fps.get()} FPS', fill='black')
-        curr_test_name = os.environ['curr_test_name']
-        draw.text(xy=(0, 10), text=curr_test_name, fill='black')
+        draw.text(xy=(0, 10), text=args.config_name, fill='black')
         fps_img.save(fps_image_path)
 
         im = o3d.io.read_image(fps_image_path)
@@ -112,28 +103,38 @@ async def stream_3D(cam):
         vis.poll_events()
         vis.update_renderer()
 
-async def stream(robot, source_type):
-    cam = Camera.from_robot(robot, source_type.value)
-    if source_type in [SourceType.WEBCAM, SourceType.REALSENSE_COLOR, SourceType.REALSENSE_DEPTH]:
-        await stream_2D(cam)
-    elif source_type == SourceType.PCD:
-        await stream_3D(cam)
+async def stream(robot):
+    # Split on - and .
+    tokens = re.split('-|\.', args.config_name)
+    source_type = SourceType(tokens[0])
+    camera_name = None
+    stream_func = None
+    if source_type == SourceType.REMOTE:
+        camera_name = 'canary-remote-main:webcam'
+        stream_func = stream_2D
+    if source_type == SourceType.LOGITECH:
+        camera_name = 'webcam'
+        stream_func = stream_2D
+    elif source_type == SourceType.REALSENSE:
+        format_type = FormatType(tokens[1])
+        if format_type == FormatType.PCD:
+            camera_name = 'pcd'
+            stream_func = stream_3D
+        elif format_type == FormatType.YUYV:
+            camera_name = 'realsense:color'
+            stream_func = stream_2D
+        elif format_type == FormatType.Z16:
+            camera_name = 'realsense_depth'
+            stream_func = stream_2D
 
-async def determine_source_type(robot):
-    # Try each source type and see which one works
-    for source_type in SourceType:
-        try:
-            cam = Camera.from_robot(robot, source_type.value)
-            return source_type
-        except ResourceNotFoundError as e:
-            continue
+    cam = Camera.from_robot(robot, camera_name)
+    await stream_func(cam)
 
 async def main():
     robot = None
     exit_status = 0
     robot = await connect()
-    source_type = await determine_source_type(robot)
-    await stream(robot, source_type)
+    await stream(robot)
     await close_robot(robot)
     exit(exit_status)
 

@@ -1,8 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 
 # This script updates the python-sdk and the vision-service-examples repo before
-# re-running the scripts in vision-service-examples/canaries. It's designed to be 
-# run before any canaries.
+# re-running the script in vision-service-examples/canary.
 
 # PASSWORD should be passed as env variable
 if [ -z "$PASSWORD" ]; then
@@ -11,48 +10,46 @@ if [ -z "$PASSWORD" ]; then
 fi
 
 VSE="vision-service-examples"
-# # UPDATE PYTHON SDK
-# echo "updating viam-sdk" # echo "updating viam-sdk and $VSE"
-# VIAM_SDK=$(pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | grep "viam-sdk")
-# if [ -n "$VIAM_SDK" ]; then
-#         pip install --upgrade --no-deps --force-reinstall viam-sdk
-#         echo "viam-sdk updated"
-# else
-#         echo "viam-sdk up-to-date"
-# fi
+# UPDATE PYTHON SDK
+echo "updating viam-sdk" # echo "updating viam-sdk and $VSE"
+VIAM_SDK=$(pip list --outdated --format=freeze | awk '{split($0, a, "=="); print a[1]}' | grep "viam-sdk")
+if [ -n "$VIAM_SDK" ]; then
+        pip install --upgrade --no-deps --force-reinstall viam-sdk
+        echo "viam-sdk updated"
+else
+        echo "viam-sdk up-to-date"
+fi
 
 # CLONE VIAMROBOTICS/VISION-SERVICE-EXAMPLES
 CV="$HOME/$VSE"
-# if [ -d "$CV" ]; then
-#   echo "$VSE found. Deleting..."
-#   rm -rf "$CV"
-#   echo "successfully deleted"
-# fi
+if [ -d "$CV" ]; then
+  echo "$VSE found. Deleting..."
+  rm -rf "$CV"
+  echo "successfully deleted"
+fi
 
-# echo "downloading $VSE to $CV..."
-# git clone https://github.com/viamrobotics/vision-service-examples.git "$CV"
-# echo "$VSE downloaded"
+echo "downloading $VSE to $CV..."
+git clone https://github.com/viamrobotics/vision-service-examples.git "$CV"
+echo "$VSE downloaded"
 
 test_duration=15 # minutes
 configs_dir="$CV/configs/canary-main-configs/"
 test_n=$(ls ${configs_dir}*.json | wc -l) # get number of canary config files
 curr_min=$(echo "$(date +%s) / 60" | bc -l) # minutes since epoch
-curr_test=$(echo "($curr_min / $test_duration) % $test_n" | bc -l)
-
-# Drop the fractional component
-curr_test=${curr_test%.*} # [0, test_n)
+curr_test=$(echo "($curr_min / $test_duration) % $test_n + 1" | bc) # [1, test_n]
 
 # https://stackoverflow.com/a/6022431
 # Selects test number $curr_test
 curr_test_path=$(ls ${configs_dir}*.json | sed "${curr_test}q;d")
 
-# This is overlaid on the stream in stream.py
-curr_test_name=$(basename $curr_test_path)
-
 cron_job_path="$HOME/.config/systemd/user/canary.service"
 mkdir -p $(dirname $cron_job_path)
 cp $CV/configs/canary.service $cron_job_path
-echo "copied cron job config to $cron_job_path"
+echo "copied cron job config to $cron_job_path (will take effect next boot)"
+
+# Used in controller.py
+curr_test_name=$(basename $curr_test_path)
+echo "running test $curr_test_name next"
 
 main_config_path="/etc/viam.json"
 echo "$PASSWORD" | sudo ln -sf $curr_test_path $main_config_path

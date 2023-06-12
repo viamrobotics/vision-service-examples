@@ -52,8 +52,8 @@
       "type": "mlmodel",
       "model": "tflite_cpu",
       "attributes": {
-        "model_path": "${packages.effdet0}/effdet0.tflite",
-        "label_path": "${packages.effdet0}/labels.txt",
+        "model_path": "/home/pi/.viam/packages/effdet0/effdet0.tflite",
+        "label_path": "/home/pi/.viam/packages/effdet0/effdetlabels.txt",
         "num_threads": 1
       }
     }

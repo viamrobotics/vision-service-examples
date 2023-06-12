@@ -1,0 +1,14 @@
+#!/bin/bash
+
+DISPLAY=":0.0"
+PASSWORD="raspberry"
+
+# Open3D requires OpenGL >=3.3, but Pi only implements 2.1. This does the equivalent computation in
+# software, which allows Open3D to display properly
+LIBGL_ALWAYS_SOFTWARE=true 
+
+parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd "$parent_path"
+
+source update
+/usr/bin/python3 controller.py --config_name $curr_test_name

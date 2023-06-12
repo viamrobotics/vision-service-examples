@@ -1,2 +1,3 @@
 screeninfo
 opencv-python
+open3d-python
