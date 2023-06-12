@@ -1,0 +1,42 @@
+{
+  "components": [
+    {
+      "name": "pcd",
+      "type": "camera",
+      "model": "join_color_depth",
+      "attributes": {
+        "color_camera_name": "realsense:color",
+        "depth_camera_name": "realsense:depth",
+        "intrinsic_parameters": {
+          "width_px": 480,
+          "height_px": 640,
+          "ppx": 320.215759,
+          "ppy": 239.543106,
+          "fx": 608.71105,
+          "fy": 609.39044
+        },
+        "output_image_type": "color"
+      }
+    }
+  ],
+  "remotes": [
+    {
+      "name": "realsense",
+      "address": "127.0.0.1:8085"
+    }
+  ],
+  "processes": [
+    {
+      "id": "realsense-server",
+      "name": "/usr/local/bin/intelrealgrpcserver",
+      "log": true,
+      "args": [
+        "8085",
+        "640",
+        "480",
+        "640",
+        "480"
+      ]
+    }
+  ]
+}
