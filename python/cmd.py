@@ -4,6 +4,7 @@ from viam.robot.client import RobotClient
 from viam.rpc.dial import Credentials, DialOptions
 from viam.services.vision import VisionServiceClient
 from viam.components.camera import Camera
+from viam.media.utils.pil import viam_to_pil_image
 import numpy as np
 import cv2
 
@@ -31,9 +32,13 @@ async def main():
     # loop forever:  find objects using Viam Vision, and draw boxes aroung them using openCV
     while(True):
         img = await cam1.get_image() # default is JPEG
-        detections = await myDetector.get_detections(img)
+
+        # Convert ViamImage to PIL Image first
+        pil_img = viam_to_pil_image(image)
+        
+        detections = await myDetector.get_detections(pil_img)
         # turn image into numpy array
-        pix = np.array(img, dtype=np.uint8)
+        pix = np.array(pil_img, dtype=np.uint8)
         pix = cv2.cvtColor(pix, cv2.COLOR_RGB2BGR)
         # put boxes around objects with enough confidence (> 0.6)
         conf = 0.6
