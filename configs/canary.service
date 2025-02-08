@@ -1,0 +1,23 @@
+[Unit]
+Description=Canary Tests
+
+# automatically start after GUI
+After=network-online.target graphical.target
+
+# only start if GUI is up
+Wants=network-online.target graphical.target
+
+[Service]
+# stop running this job after 15 minutes (or less if started in middle of increment)
+RuntimeMaxSec=15m
+
+# always restart after shutdown. This is a trick to periodically restart.
+Restart=always
+
+TimeoutStartSec=5m
+
+ExecStart=/home/pi/vision-service-examples/canary/start
+
+[Install]
+# this was previously multi-user.target but there is no multi-user.target in /usr/lib/systemd/user/
+WantedBy=default.target

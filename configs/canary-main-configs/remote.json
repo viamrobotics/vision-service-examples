@@ -1,0 +1,10 @@
+{
+  "components": [],
+  "remotes": [
+    {
+      "name": "canary-remote-main",
+      "address": "canary-remote-main.lm93zdrt5p.viam.cloud",
+      "secret": "3pfh6vpvvup4h7071d1x41q99h2oqhlp89lwdanq3zn0oy3f"
+    }
+  ]
+}

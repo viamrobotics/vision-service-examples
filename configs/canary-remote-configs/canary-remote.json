@@ -1,0 +1,13 @@
+{
+  "components": [
+    {
+      "name": "cam",
+      "type": "camera",
+      "model": "webcam",
+      "attributes": {
+        "video_path": "/dev/video0"
+      },
+      "depends_on": []
+    }
+  ]
+}
